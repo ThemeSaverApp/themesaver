@@ -1,8 +1,5 @@
 # ThemeSaver
 This is a program that will allow you to save different linux rice. This currently only works on twister os or any other Xfce4 desktop.  
-**LXDE Compatibility coming soon !!**
-
-**Note:** This only saves the xfce4-theme configuration, xfce4-panel, and plank configuration. If you want it to save any other configuration open a issue.
 
 ## Installation
 Run this command in a terminal to install themesaver
@@ -30,4 +27,4 @@ Prints list of available arguments
 - [ ] Create export argument
 - [ ] Create import argument
 - [ ] Create GUI with tkinter
-- [ ] LXDE Compatibility
+- [X] LXDE Compatibility
