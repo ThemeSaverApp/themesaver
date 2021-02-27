@@ -130,6 +130,7 @@ if len(sys.argv) > 1:
         print(Fore.GREEN + '1) ' + Fore.CYAN + '"save [slotname]"' + Fore.GREEN + ' Save a new slot')
         print(Fore.GREEN + '2) ' + Fore.CYAN + '"load [slotname]"' + Fore.GREEN + ' Load existing slot')
         print(Fore.GREEN + '3) ' + Fore.CYAN + '"del"' + Fore.GREEN + ' Delete a slot')
+        print(Fore.GREEN + '3) ' + Fore.CYAN + '"ls"' + Fore.GREEN + ' List all saved slots')
         print(Fore.GREEN + '3) ' + Fore.CYAN + '"help"' + Fore.GREEN + ' Get a list of available argument')
         
     else:
