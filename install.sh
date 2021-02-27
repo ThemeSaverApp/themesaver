@@ -12,6 +12,6 @@ sudo apt install -f
 #Installing xdotool
 sudo apt install xdotool
 #Creating alias for python script
-echo "alias themesaver='python ~/ThemeSaver/ThemeSaver.py'" >> ~/.bashrc
+echo "alias themesaver='python3 ~/ThemeSaver/ThemeSaver.py'" >> ~/.bashrc
 
 bash
