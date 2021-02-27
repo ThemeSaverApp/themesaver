@@ -6,20 +6,26 @@ from colorama import Fore, Back, Style
 
 #Initialing List and Variables
 RequiredChannels = [ "xfce4-desktop", "xfwm4","xsettings" ]
-NumberOfSlots = 0
-
-#Functions
 
 #SaveSlot Functions
 def SaveSlot(SlotName):
+    #Checking if data directory is there
+    if not os.path.isdir(f"/home/pi/ThemeSaver/data"):
+        #Creating data directory if not there
+        os.system('mkdir /home/pi/ThemeSaver/data')
+    #Checking if there is a slot with the given name
     if os.path.isdir(f"/home/pi/ThemeSaver/data/{SlotName}"):
+        #Aksing user if they want to overwrite existing slot
         Overwrite = input(Fore.RED + "A slot with that name already exists. Do you want to overwrite it ? [Y/n]")
         if Overwrite.lower() == 'y':
-            print('Okay overwriting')
+            print(Fore.GREEN + 'Okay overwriting')
+            #Removing old slot
+            os.system(f'rm -r ~/ThemeSaver/data/{SlotName}')
         else:
-            print('Not overwriting')
+            print(Fore.GREEN + 'Not overwriting')
+            #Stopping the program if user does not want to overwrite
             quit()
-    os.system(f'rm -r ~/ThemeSaver/data/{SlotName}')
+    
     #Creating a directory for slot in ~/ThemeSaver/data/
     os.system(f'mkdir ~/ThemeSaver/data/{SlotName}')
     #Taking Screenshot
@@ -51,14 +57,16 @@ def SaveSlot(SlotName):
     #Checking if plank is running
     PlankRunning = os.popen('pgrep plank').read()
     if PlankRunning != "":
-        print("Plank is running :)")
         #Storing Plank Configuration
         os.system(f"mkdir ~/ThemeSaver/data/{SlotName}/plank")
+        #Plank Themes
         os.system(f'gsettings get net.launchpad.plank.dock.settings:/net/launchpad/plank/docks/dock1/ theme > ~/ThemeSaver/data/{SlotName}/plank/theme')
+        #Plank Position
         os.system(f'gsettings get net.launchpad.plank.dock.settings:/net/launchpad/plank/docks/dock1/ position > ~/ThemeSaver/data/{SlotName}/plank/position')
+        #Plank Alignment
         os.system(f'gsettings get net.launchpad.plank.dock.settings:/net/launchpad/plank/docks/dock1/ alignment > ~/ThemeSaver/data/{SlotName}/plank/alignment')
-        
-    os.system('clear')
+
+    print(Fore.GREEN + 'Finished Saving')
 
 def LoadSlot(SlotName):
     if not os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName}'):
@@ -70,7 +78,6 @@ def LoadSlot(SlotName):
             PropertyFileValue = PropertyFile.read()
             PropertyFilePath = PropertyFiles.replace("+","/").strip()
             os.popen(f"xfconf-query -c {PropertyFolders.strip()} -p {PropertyFilePath} -s '{PropertyFileValue.strip()}' ") 
-            #subprocess.Popen(f"xfconf-query -c {PropertyFolders.strip()} -p {PropertyFilePath} -s '{PropertyFileValue.strip()}' ", stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
     #Loading Plank configs if they exist
     if os.path.isdir(f"/home/pi/ThemeSaver/data/{SlotName}/plank") == True:
@@ -101,24 +108,22 @@ def Del(SlotName):
 
 #Terminal Usage
 if len(sys.argv) > 1:
-    if sys.argv[1] == 'load':
+    if sys.argv[1].lower() == 'load':
         if len(sys.argv) > 2:
             LoadSlot(sys.argv[2])
         else:
             print(Fore.RED + "Enter Valid Slot Name")
-    elif sys.argv[1] == 'save':
+    elif sys.argv[1].lower() == 'save':
         if len(sys.argv) > 2:
             SaveSlot(sys.argv[2])
         else:
             print(Fore.RED + "Enter Valid Slot Name")
-    elif sys.argv[1] == 'del':
+    elif sys.argv[1].lower() == 'delete' or sys.argv[1].lower() == 'del' :
         if len(sys.argv) > 2:
             Del(sys.argv[2])
         else:
             print(Fore.RED + "Enter Valid Slot Name")
-    elif sys.argv[1] == 'gui':
-        pass
-    elif sys.argv[1] == 'list':
+    elif sys.argv[1].lower() == 'list' or sys.argv[1].lower() == 'ls':
         List()
     elif sys.argv[1] == 'help':
         print(Fore.GREEN + 'Available arguments:')
