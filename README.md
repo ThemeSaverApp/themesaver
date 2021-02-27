@@ -22,3 +22,9 @@ Delete any saved slot
 
 4. `themesaver ls`  **or** `themesaver list`  
 List all saved slots
+
+## To Do
+- [ ] Create export argument
+- [ ] Create import argument
+- [ ] Create GUI with tkinter
+- [ ] LXDE Compatibility
