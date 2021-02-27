@@ -23,6 +23,9 @@ Delete any saved slot
 4. `themesaver ls`  **or** `themesaver list`  
 List all saved slots
 
+5. `themesaver help`  
+Prints list of available arguments
+
 ## To Do
 - [ ] Create export argument
 - [ ] Create import argument
