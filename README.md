@@ -7,7 +7,7 @@ This is a program that will allow you to save different linux rice. This current
 ## Installation
 Run this command in a terminal to install themesaver
 ```
-wget -qO- https://raw.githubusercontent.com/techcoder20/themesaver/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.sh | bash
 ```
 
 ## Available Arguments:
