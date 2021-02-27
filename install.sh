@@ -1,8 +1,9 @@
 #!/bin/bash
 
 #Cloning github repo if not present
-if [ ! -d '/home/$USER/ThemeSaver' ]; then
-    git clone https://github.com/techcoder20/themesaver
+if [ ! -d '~/ThemeSaver' ]; then
+    git clone https://github.com/techcoder20/themesaver ~/ThemeSaver
+fi
 
 #Installing xfce4-panel-profiles
 sudo dpkg -i ~/ThemeSaver/xfce4-panel-profiles.deb
