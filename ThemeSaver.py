@@ -5,10 +5,11 @@ import subprocess
 from colorama import Fore, Back, Style
 
 #Initialing List and Variables
-RequiredChannels = [ "xfce4-desktop", "xfwm4","xsettings" ]
+RequiredChannelsXfce = [ "xfce4-desktop", "xfwm4","xsettings" ]
+RequiredFoldersLXDE = ['lxsession', 'lxterminal', 'lxpanel', 'pcmanfm', 'openbox']
 
-#SaveSlot Functions
-def SaveSlot(SlotName):
+#SaveSlotXfce Functions
+def SaveSlotXfce(SlotName):
     #Checking if data directory is there
     if not os.path.isdir(f"/home/pi/ThemeSaver/data"):
         #Creating data directory if not there
@@ -34,7 +35,7 @@ def SaveSlot(SlotName):
     os.system(f'scrot ~/ThemeSaver/data/{SlotName}/Screenshot.png') #Taking a Screenshot
     os.system('xdotool key ctrl+alt+d') #Unhiding all windows on desktop
 
-    for channel in RequiredChannels:
+    for channel in RequiredChannelsXfce:
         #Creating list of properties 
         os.system(f"xfconf-query -c {channel.strip()} -l > ~/ThemeSaver/data/{channel.strip()}")
         #Opening list of properties
@@ -68,11 +69,11 @@ def SaveSlot(SlotName):
 
     print(Fore.GREEN + 'Finished Saving')
 
-def LoadSlot(SlotName):
+def LoadSlotXfce(SlotName):
     if not os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName}'):
         print(Fore.RED + 'No slot like that exists. Use command "themesave list" to print the list of slots')
         quit()
-    for PropertyFolders in RequiredChannels:
+    for PropertyFolders in RequiredChannelsXfce:
         for PropertyFiles in os.listdir(f"/home/pi/ThemeSaver/data/{SlotName}/{PropertyFolders}"):
             PropertyFile = open(f"/home/pi/ThemeSaver/data/{SlotName}/{PropertyFolders}/{PropertyFiles}")
             PropertyFileValue = PropertyFile.read()
@@ -93,6 +94,54 @@ def LoadSlot(SlotName):
     subprocess.Popen(["setsid", "xfce4-panel", "&>/dev/null"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     os.system('clear')
 
+def RefreshDesktopLXDE():
+    subprocess.Popen(["killall", "openbox-lxde-pi", "openbox", "pcmanfm", "lxpanel"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    time.sleep(2) #Waiting for two seconds
+    subprocess.Popen(["setsid", "openbox-lxde-pi"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    time.sleep(2) #Waiting for two seconds
+    subprocess.Popen(["nohup", "lxpanel", "--profile", "LXDE-pi"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    time.sleep(2) #Waiting for two seconds
+    subprocess.Popen(["nohup", "pcmanfm", "--desktop", "--profile", "LXDE-pi"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+    
+
+def SaveSlotLXDE(SlotName):
+    #Checking if data directory is there
+    if not os.path.isdir(f"/home/pi/ThemeSaver/data"):
+        #Creating data directory if not there
+        os.system('mkdir /home/pi/ThemeSaver/data')
+    #Checking if there is a slot with the given name
+    if os.path.isdir(f"/home/pi/ThemeSaver/data/{SlotName}"):
+        #Aksing user if they want to overwrite existing slot
+        Overwrite = input(Fore.RED + "A slot with that name already exists. Do you want to overwrite it ? [Y/n]")
+        if Overwrite.lower() == 'y':
+            print(Fore.GREEN + 'Okay overwriting')
+            #Removing old slot
+            os.system(f'rm -r ~/ThemeSaver/data/{SlotName}')
+        else:
+            print(Fore.GREEN + 'Not overwriting')
+            #Stopping the program if user does not want to overwrite
+            quit()
+    
+    os.system(f'mkdir ~/ThemeSaver/data/{SlotName}')
+    
+    #Taking Screenshot
+    os.system('xdotool key ctrl+alt+d') #Hiding all windows on desktop
+    time.sleep(2) #Waiting for two seconds
+    os.system(f'scrot ~/ThemeSaver/data/{SlotName}/Screenshot.png') #Taking a Screenshot
+    os.system('xdotool key ctrl+alt+d') #Unhiding all windows on desktop
+    
+    for folder in RequiredFoldersLXDE:
+        os.system(f'cp -r ~/.config/{folder} ~/ThemeSaver/data/{SlotName}')
+
+def LoadSlotLXDE(SlotName):
+    if not os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName}'):
+        print(Fore.RED + 'No slot like that exists. Use command "themesave list" to print the list of slots')
+        quit()
+    for folder in RequiredFoldersLXDE:
+        os.system(f'cp -r ~/ThemeSaver/data/{SlotName}/{folder} ~/.config')
+    RefreshDesktopLXDE()
+
 def List():
     SlotNumber = 0
     print(Fore.GREEN + 'Slots:')
@@ -110,12 +159,23 @@ def Del(SlotName):
 if len(sys.argv) > 1:
     if sys.argv[1].lower() == 'load':
         if len(sys.argv) > 2:
-            LoadSlot(sys.argv[2])
+            DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
+            DesktopEntry = DesktopEntryFile.read()
+            if DesktopEntry.strip() == 'xfce':
+                LoadSlotXfce(sys.argv[2])
+            elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
+                LoadSlotLXDE(sys.argv[2])
+                
         else:
             print(Fore.RED + "Enter Valid Slot Name")
     elif sys.argv[1].lower() == 'save':
         if len(sys.argv) > 2:
-            SaveSlot(sys.argv[2])
+            DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
+            DesktopEntry = DesktopEntryFile.read()
+            if DesktopEntry.strip() == 'xfce':
+                SaveSlotXfce(sys.argv[2])
+            elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
+                SaveSlotLXDE(sys.argv[2])
         else:
             print(Fore.RED + "Enter Valid Slot Name")
     elif sys.argv[1].lower() == 'delete' or sys.argv[1].lower() == 'del' :
