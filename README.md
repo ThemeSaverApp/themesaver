@@ -1,5 +1,5 @@
 # ThemeSaver
-This is a program that will allow you to save different linux rice. This currently only works on twister os or any other Xfce4 desktop.  
+This is a program that will allow you to save different linux rice. This currently only works on twister os or Raspberry Pi OS. Import and export is still experimental and is not ready for LXDE yet.
 
 ## Installation
 Run this command in a terminal to install themesaver
@@ -20,11 +20,10 @@ Delete any saved slot
 4. `themesaver ls`  **or** `themesaver list`  
 List all saved slots
 
+5. `themesaver gui`
+Loads gui for themesaver. There is a desktop shortcut too.
+
 5. `themesaver help`  
 Prints list of available arguments
 
-## To Do
-- [ ] Create export argument
-- [ ] Create import argument
-- [ ] Create GUI with tkinter
-- [X] LXDE Compatibility
+## GUI Screenshots coming soon

@@ -16,6 +16,19 @@ fi
 #Installing xdotool
 sudo apt update
 sudo apt -y install xdotool
+
+#Copying Icon
+sudo cp ~/ThemeSaver/ThemeSaver.png /usr/share/icons
+
+#Creating Desktop Entry
+echo "[Desktop Entry]
+Type=Application
+Terminal=false
+Exec=python3 /home/$USER/ThemeSaver/gui.py
+Name=ThemeSaver
+Icon=ThemeSaver
+Categories=Utility;" >> ~/.local/share/applications/ThemeSaver.desktop
+
 #Creating alias for python script
 echo "alias themesaver='python3 ~/ThemeSaver/ThemeSaver.py'" >> ~/.bashrc
 

@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import subprocess
+import tarfile
 from colorama import Fore, Back, Style
 
 #Initialing List and Variables
@@ -155,6 +156,111 @@ def Del(SlotName):
     else:
         print(Fore.RED + 'No Slot like that. Use command "themesaver list" to print the list of slots')
 
+def Export(SlotName):
+    if not os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName}'):
+        print(Fore.RED + 'No slot like that. Use command "themesaver ls" to print the list of saved slots')
+        quit()
+
+    if not os.path.isdir('/home/pi/ThemeSaver/export/'):
+        os.system(f'mkdir ~/ThemeSaver/export/')
+
+    os.system(f'mkdir ~/ThemeSaver/export/{SlotName}')
+
+    ThemeFile = open(f'/home/pi/ThemeSaver/data/{SlotName}/xsettings/+Net+ThemeName')
+    Theme = ThemeFile.read()
+    Theme = Theme.strip()
+    os.system(f'mkdir ~/ThemeSaver/export/{SlotName}/theme')
+    if os.path.isdir(f'/home/pi/.themes/{Theme}'):
+        os.system(f'cp -r ~/.themes/{Theme} ~/ThemeSaver/export/{SlotName}/theme/')
+    elif os.path.isdir(f'/usr/share/themes/{Theme}'):
+        os.system(f'cp -r /usr/share/themes/{Theme} ~/ThemeSaver/export/{SlotName}/theme/')
+
+    IconThemeFile = open(f'/home/pi/ThemeSaver/data/{SlotName}/xsettings/+Net+IconThemeName')
+    IconTheme = IconThemeFile.read()
+    IconTheme = IconTheme.strip()
+    os.system(f'mkdir ~/ThemeSaver/export/{SlotName}/icons')
+    if os.path.isdir(f'/home/pi/.icons/{IconTheme}'):
+        os.system(f'cp -r ~/.icons/{IconTheme} ~/ThemeSaver/export/{SlotName}/icons/')
+    elif os.path.isdir(f'/usr/share/icons/{IconTheme}'):
+        os.system(f'cp -r /usr/share/icons/{IconTheme} ~/ThemeSaver/export/{SlotName}/icons/')
+
+    CursorThemeFile = open(f'/home/pi/ThemeSaver/data/{SlotName}/xsettings/+Gtk+CursorThemeName')
+    CursorTheme = CursorThemeFile.read()
+    CursorTheme = CursorTheme.strip()
+    os.system(f'mkdir ~/ThemeSaver/export/{SlotName}/cursors')
+    if os.path.isdir(f'/home/pi/.icons/{CursorTheme}'):
+        os.system(f'cp -r ~/.icons/{CursorTheme} ~/ThemeSaver/export/{SlotName}/cursors/')
+    elif os.path.isdir(f'/usr/share/icons/{CursorTheme}'):
+        os.system(f'cp -r /usr/share/icons/{CursorTheme} ~/ThemeSaver/export/{SlotName}/cursors/')
+
+
+    if os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName}/plank'):
+        PlankThemeFile = open(f'/home/pi/ThemeSaver/data/{SlotName}/plank/theme')
+        PlankTheme = PlankThemeFile.read()
+        PlankTheme = PlankTheme.strip().replace("'", "")
+        os.system(f'mkdir ~/ThemeSaver/export/{SlotName}/plank')
+        if os.path.isdir(f'/home/pi/.local/share/plank/themes/{PlankTheme}'):
+            os.system(f'cp -r /home/pi/.local/share/plank/themes/{PlankTheme} ~/ThemeSaver/export/{SlotName}/plank')
+        elif os.path.isdir(f'/usr/share/plank/themes/{PlankTheme}'):
+            os.system(f'cp -r /usr/share/plank/themes/{PlankTheme} ~/ThemeSaver/export/{SlotName}/plank')
+
+
+    WallpaperFile = open(f'/home/pi/ThemeSaver/data/{SlotName}/xfce4-desktop/+backdrop+screen0+monitor0+workspace0+last-image')
+    Wallpaper = WallpaperFile.read()
+    Wallpaper = Wallpaper.strip()
+    os.system(f'mkdir ~/ThemeSaver/export/{SlotName}/wallpaper/')
+    os.system(f'cp {Wallpaper} ~/ThemeSaver/export/{SlotName}/wallpaper/')
+
+    os.system(f'mkdir ~/ThemeSaver/export/{SlotName}/slot/')
+    os.system(f'cp -r ~/ThemeSaver/data/{SlotName} ~/ThemeSaver/export/{SlotName}/slot/')
+    tar = tarfile.open(f"/home/pi/ThemeSaver/export/{SlotName}.tar.gz", "w:gz")
+    tar.add(f"/home/pi/ThemeSaver/export/{SlotName}", arcname=f"{SlotName}")
+    tar.close()
+    os.system(f'rm -r ~/ThemeSaver/export/{SlotName}')
+    print(Fore.GREEN + 'Finished exporting slot ')
+
+def Import(FilePath):
+    if not os.path.isfile(FilePath):
+        print(Fore.RED + 'No File Like That')
+        quit()
+    #Removing and creating import directory
+    os.system('rm -r ~/ThemeSaver/import/')
+    os.system('mkdir ~/ThemeSaver/import/')
+
+    #Extracting archive
+    file = tarfile.open(FilePath)
+    file.extractall('/home/pi/ThemeSaver/import/') 
+    file.close() 
+
+    #Copying themes and other stuff
+    print(Fore.GREEN + 'Copying slot')
+    os.system('cp -r /home/pi/ThemeSaver/import/*/slot/* ~/ThemeSaver/data/')
+
+    print(Fore.GREEN + 'Copying themes')
+    os.system('sudo cp -r /home/pi/ThemeSaver/import/*/theme/* /usr/share/themes/')
+
+    print(Fore.GREEN + 'Copying icons')
+    os.system('sudo cp -r /home/pi/ThemeSaver/import/*/icons/* /usr/share/icons/')
+
+    print(Fore.GREEN + 'Copying cursors')
+    os.system('sudo cp -r /home/pi/ThemeSaver/import/*/cursors/* /usr/share/icons/')
+
+    print(Fore.GREEN + 'Copying plank theme')
+    os.system('sudo cp -r /home/pi/ThemeSaver/import/*/plank/* /usr/share/plank/themes/')
+
+    print(Fore.GREEN + 'Copying wallpaper')
+    #os.system('sudo cp -r /home/pi/ThemeSaver/import/*/wallpaper/* ~/ThemeSaver/wallpapers/')
+    
+    os.system('echo $(cat /home/pi/ThemeSaver/import/*/slot/*/xfce4-desktop/+backdrop+screen0+monitor0+workspace0+last-image) > ~/ThemeSaver/import/wallpaperpath')
+    WallpaperPathFile = open('/home/pi/ThemeSaver/import/wallpaperpath')
+    WallpaperPath = WallpaperPathFile.read()
+    os.system(f'sudo cp ~/ThemeSaver/import/*/wallpaper/* {WallpaperPath}')
+
+    #Removing import directory after copying files
+    os.system('rm -r ~/ThemeSaver/import')
+
+    print(Fore.GREEN + 'Finished importing slot')
+
 #Terminal Usage
 if len(sys.argv) > 1:
     if sys.argv[1].lower() == 'load':
@@ -170,6 +276,7 @@ if len(sys.argv) > 1:
             print(Fore.RED + "Enter Valid Slot Name")
     elif sys.argv[1].lower() == 'save':
         if len(sys.argv) > 2:
+            os.system('echo $DESKTOP_SESSION > ~/ThemeSaver/DesktopEnvironment')
             DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
             DesktopEntry = DesktopEntryFile.read()
             if DesktopEntry.strip() == 'xfce':
@@ -183,15 +290,40 @@ if len(sys.argv) > 1:
             Del(sys.argv[2])
         else:
             print(Fore.RED + "Enter Valid Slot Name")
+    elif sys.argv[1].lower() == 'export':
+        os.system('echo $DESKTOP_SESSION > ~/ThemeSaver/DesktopEnvironment')
+        DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
+        DesktopEntry = DesktopEntryFile.read()
+        if len(sys.argv) > 2:
+            if DesktopEntry.strip() == 'xfce':
+                Export(sys.argv[2])
+            elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
+                print(Fore.RED + 'Export Slot is not ready for LXDE yet :(')
+        else:
+            print(Fore.RED + "Enter Valid Slot Name")
+    elif sys.argv[1].lower() == 'import':
+        os.system('echo $DESKTOP_SESSION > ~/ThemeSaver/DesktopEnvironment')
+        DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
+        DesktopEntry = DesktopEntryFile.read()
+        if len(sys.argv) > 2:
+            if DesktopEntry.strip() == 'xfce':
+                Import(sys.argv[2])
+            elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
+                print(Fore.RED + 'Import Slot is not ready for LXDE yet :(')         
+        else:
+            print(Fore.RED + "Enter Valid File Path")
     elif sys.argv[1].lower() == 'list' or sys.argv[1].lower() == 'ls':
         List()
+    elif sys.argv[1].lower() == 'gui':
+        os.system('python3 ~/ThemeSaver/gui.py')
     elif sys.argv[1] == 'help':
         print(Fore.GREEN + 'Available arguments:')
         print(Fore.GREEN + '1) ' + Fore.CYAN + '"save [slotname]"' + Fore.GREEN + ' Save a new slot')
         print(Fore.GREEN + '2) ' + Fore.CYAN + '"load [slotname]"' + Fore.GREEN + ' Load existing slot')
         print(Fore.GREEN + '3) ' + Fore.CYAN + '"del"' + Fore.GREEN + ' Delete a slot')
         print(Fore.GREEN + '4) ' + Fore.CYAN + '"ls"' + Fore.GREEN + ' List all saved slots')
-        print(Fore.GREEN + '5) ' + Fore.CYAN + '"help"' + Fore.GREEN + ' Get a list of available argument')
+        print(Fore.GREEN + '5) ' + Fore.CYAN + '"gui"' + Fore.GREEN + ' Launches GUI for themesaver')
+        print(Fore.GREEN + '6) ' + Fore.CYAN + '"help"' + Fore.GREEN + ' Get a list of available argument')
         
     else:
         print(Fore.RED + 'Please Enter Valid Argument, Use command "themesaver help" to get a list of available arguments')
