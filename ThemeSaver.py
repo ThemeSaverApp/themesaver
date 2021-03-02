@@ -140,6 +140,7 @@ def LoadSlotLXDE(SlotName):
         print(Fore.RED + 'No slot like that exists. Use command "themesave list" to print the list of slots')
         quit()
     for folder in RequiredFoldersLXDE:
+        os.system(f'sudo rm -r ~/.config/{folder}')
         os.system(f'cp -r ~/ThemeSaver/data/{SlotName}/{folder} ~/.config')
     RefreshDesktopLXDE()
 
@@ -263,29 +264,32 @@ def Import(FilePath):
 if len(sys.argv) > 1:
     if sys.argv[1].lower() == 'load':
         if len(sys.argv) > 2:
+            Slot = sys.argv[2].replace(" ", "_")
             DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
             DesktopEntry = DesktopEntryFile.read()
             if DesktopEntry.strip() == 'xfce':
-                LoadSlotXfce(sys.argv[2])
+                LoadSlotXfce(Slot)
             elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
-                LoadSlotLXDE(sys.argv[2])
+                LoadSlotLXDE(Slot)
                 
         else:
             print(Fore.RED + "Enter Valid Slot Name")
     elif sys.argv[1].lower() == 'save':
         if len(sys.argv) > 2:
+            Slot = sys.argv[2].replace(" ", "_")
             os.system('echo $DESKTOP_SESSION > ~/ThemeSaver/DesktopEnvironment')
             DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
             DesktopEntry = DesktopEntryFile.read()
             if DesktopEntry.strip() == 'xfce':
-                SaveSlotXfce(sys.argv[2])
+                SaveSlotXfce(Slot)
             elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
-                SaveSlotLXDE(sys.argv[2])
+                SaveSlotLXDE(Slot)
         else:
             print(Fore.RED + "Enter Valid Slot Name")
     elif sys.argv[1].lower() == 'delete' or sys.argv[1].lower() == 'del' :
         if len(sys.argv) > 2:
-            Del(sys.argv[2])
+            Slot = sys.argv[2].replace(" ", "_")
+            Del(Slot)
         else:
             print(Fore.RED + "Enter Valid Slot Name")
     elif sys.argv[1].lower() == 'export':
@@ -293,8 +297,9 @@ if len(sys.argv) > 1:
         DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
         DesktopEntry = DesktopEntryFile.read()
         if len(sys.argv) > 2:
+            Slot = sys.argv[2].replace(" ", "_")
             if DesktopEntry.strip() == 'xfce':
-                Export(sys.argv[2])
+                Export(Slot)
             elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
                 print(Fore.RED + 'Export Slot is not ready for LXDE yet :(')
         else:
@@ -304,8 +309,9 @@ if len(sys.argv) > 1:
         DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
         DesktopEntry = DesktopEntryFile.read()
         if len(sys.argv) > 2:
+            Slot = sys.argv[2].replace(" ", "_")
             if DesktopEntry.strip() == 'xfce':
-                Import(sys.argv[2])
+                Import(Slot)
             elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
                 print(Fore.RED + 'Import Slot is not ready for LXDE yet :(')         
         else:
