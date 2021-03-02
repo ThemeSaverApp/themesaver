@@ -16,17 +16,17 @@ def SaveSlot():
     SlotName = Entry(SaveNewSlotWindow, width=20, bg='black', fg='white') 
     SlotName.grid(row=1, column=0, padx=2, pady=2)
     def ContinueButton():
-        print(SlotName.get())
-        if not SlotName.get().strip() == '':
-            if os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName.get()}'):
+        print(SlotName.get().replace(" ", "_"))
+        if not SlotName.get().replace(" ", "_").strip() == '':
+            if os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName.get().replace(" ", "_")}'):
                 OverwriteAsk = messagebox.askyesno(title='Do you want to overwrite?', message='A slot with that name already exists. Do you want to overwrite it ?')
                 if OverwriteAsk:
-                    os.system(f'python3 ~/ThemeSaver/ThemeSaver.py del {SlotName.get()}')
-                    os.system(f'python3 ~/ThemeSaver/ThemeSaver.py save {SlotName.get()}')
+                    os.system(f'python3 ~/ThemeSaver/ThemeSaver.py del {SlotName.get().replace(" ", "_")}')
+                    os.system(f'python3 ~/ThemeSaver/ThemeSaver.py save {SlotName.get().replace(" ", "_")}')
                     SaveNewSlotWindow.destroy()
                     messagebox.showinfo(title='Finished Saving Theme', message='Finished Saving Theme :)')
             else:
-                os.system(f'python3 ~/ThemeSaver/ThemeSaver.py save {SlotName.get()}')
+                os.system(f'python3 ~/ThemeSaver/ThemeSaver.py save {SlotName.get().replace(" ", "_")}')
                 SaveNewSlotWindow.destroy()
                 messagebox.showinfo(title='Finished Saving Theme', message='Finished Saving Theme :)')
         else:
