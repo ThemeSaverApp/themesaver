@@ -43,6 +43,11 @@ def LoadSlot():
 
     SlotList = []
     SlotNumber = [0]
+
+    #Checking if data directory is there
+    if not os.path.isdir('/home/pi/ThemeSaver/data'):
+        os.system('mkdir ~/ThemeSaver/data')
+
     for Slot in os.listdir('/home/pi/ThemeSaver/data'):
         SlotList.append(Slot)
 
@@ -85,8 +90,15 @@ def LoadSlot():
         ExportButton.grid(row=2, column=2, pady=2)
 
         def ExportBtn():
-            os.system(f'python3 ~/ThemeSaver/ThemeSaver.py export {SlotList[SlotNumber[0]]}')
-            messagebox.showinfo(title='Export Slot', message=f'Finished Exporting Slot. Slot Exported To /home/pi/ThemeSaver/export/{SlotList[SlotNumber[0]]}.tar.gz')
+            os.system('echo $DESKTOP_SESSION > ~/ThemeSaver/DesktopEnvironment')
+            DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
+            DesktopEntry = DesktopEntryFile.read()
+            if DesktopEntry.strip() == 'xfce':
+                os.system(f'python3 ~/ThemeSaver/ThemeSaver.py export {SlotList[SlotNumber[0]]}')
+                messagebox.showinfo(title='Export Slot', message=f'Finished Exporting Slot. Slot Exported To /home/pi/ThemeSaver/export/{SlotList[SlotNumber[0]]}.tar.gz')
+            elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
+                messagebox.showinfo(title='Export Slot', message='Export Slot is not ready for LXDE yet :(')
+            
 
         def DelSlot():
             os.system(f'python3 ~/ThemeSaver/ThemeSaver.py del {SlotList[SlotNumber[0]]}')
@@ -154,10 +166,15 @@ def LoadSlot():
 
 
 def ImportSlot():
-    root.filename = filedialog.askopenfilename(initialdir="/home/pi", title="Select Slot File")
-    #print(root.filename)
-    os.system(f'python3 ~/ThemeSaver/ThemeSaver.py import {root.filename}')
-    messagebox.showinfo(title='Finished Importing', message='Finished Importing Slot')
+    os.system('echo $DESKTOP_SESSION > ~/ThemeSaver/DesktopEnvironment')
+    DesktopEntryFile = open('/home/pi/ThemeSaver/DesktopEnvironment')
+    DesktopEntry = DesktopEntryFile.read()
+    if DesktopEntry.strip() == 'xfce':
+        root.filename = filedialog.askopenfilename(initialdir="/home/pi", title="Select Slot File")
+        os.system(f'python3 ~/ThemeSaver/ThemeSaver.py import {root.filename}')
+        messagebox.showinfo(title='Finished Importing', message='Finished Importing Slot')
+    elif DesktopEntry.strip() == 'lxde' or DesktopEntry.strip() == 'LXDE-pi':
+        messagebox.showinfo(title='Import Slot', message='Import Slot is not ready for LXDE yet :(')
 
 #Main Window
 root = Tk()

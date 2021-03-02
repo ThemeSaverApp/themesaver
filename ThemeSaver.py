@@ -249,8 +249,6 @@ def Import(FilePath):
     os.system('sudo cp -r /home/pi/ThemeSaver/import/*/plank/* /usr/share/plank/themes/')
 
     print(Fore.GREEN + 'Copying wallpaper')
-    #os.system('sudo cp -r /home/pi/ThemeSaver/import/*/wallpaper/* ~/ThemeSaver/wallpapers/')
-    
     os.system('echo $(cat /home/pi/ThemeSaver/import/*/slot/*/xfce4-desktop/+backdrop+screen0+monitor0+workspace0+last-image) > ~/ThemeSaver/import/wallpaperpath')
     WallpaperPathFile = open('/home/pi/ThemeSaver/import/wallpaperpath')
     WallpaperPath = WallpaperPathFile.read()
@@ -320,7 +318,7 @@ if len(sys.argv) > 1:
         print(Fore.GREEN + 'Available arguments:')
         print(Fore.GREEN + '1) ' + Fore.CYAN + '"save [slotname]"' + Fore.GREEN + ' Save a new slot')
         print(Fore.GREEN + '2) ' + Fore.CYAN + '"load [slotname]"' + Fore.GREEN + ' Load existing slot')
-        print(Fore.GREEN + '3) ' + Fore.CYAN + '"del"' + Fore.GREEN + ' Delete a slot')
+        print(Fore.GREEN + '3) ' + Fore.CYAN + '"del [slotname]"' + Fore.GREEN + ' Delete a slot')
         print(Fore.GREEN + '4) ' + Fore.CYAN + '"ls"' + Fore.GREEN + ' List all saved slots')
         print(Fore.GREEN + '5) ' + Fore.CYAN + '"gui"' + Fore.GREEN + ' Launches GUI for themesaver')
         print(Fore.GREEN + '6) ' + Fore.CYAN + '"help"' + Fore.GREEN + ' Get a list of available argument')
