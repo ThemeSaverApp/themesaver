@@ -13,9 +13,9 @@ if [ $DE == 'xfce' ];then
     #Fixing broken packages if any
     sudo apt -y install -f
 fi
-#Installing xdotool
+#Installing dependencies
 sudo apt update
-sudo apt -y install xdotool
+sudo apt -y install xdotool python-pil.imagetk python3-pil python3-pil.imagetk
 
 #Copying Icon
 sudo cp ~/ThemeSaver/ThemeSaver.png /usr/share/icons
