@@ -15,7 +15,7 @@ if [ $DE == 'xfce' ];then
 fi
 #Installing dependencies
 sudo apt update
-sudo apt -y install xdotool python-pil.imagetk python3-pil python3-pil.imagetk
+sudo apt -y install xdotool python-pil.imagetk python3-pil python3-pil.imagetk fonts-ubuntu
 
 #Copying Icon
 sudo cp ~/ThemeSaver/ThemeSaver.png /usr/share/icons
