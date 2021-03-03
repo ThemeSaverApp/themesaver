@@ -9,6 +9,11 @@ from colorama import Fore, Back, Style
 RequiredChannelsXfce = [ "xfce4-desktop", "xfwm4","xsettings" ]
 RequiredFoldersLXDE = ['lxsession', 'lxterminal', 'lxpanel', 'pcmanfm', 'openbox']
 
+#Checking if data directory is there
+if not os.path.isdir(f"/home/pi/ThemeSaver/data"):
+    #Creating data directory if not there
+    os.system('mkdir /home/pi/ThemeSaver/data')
+
 #SaveSlotXfce Functions
 def SaveSlotXfce(SlotName):
     #Checking if data directory is there
