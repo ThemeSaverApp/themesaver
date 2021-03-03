@@ -101,8 +101,10 @@ def LoadSlot():
             
 
         def DelSlot():
-            os.system(f'python3 ~/ThemeSaver/ThemeSaver.py del {SlotList[SlotNumber[0]]}')
-            LoadSlotsWindow.destroy()
+            Confirmation = messagebox.askyesno(title='Confirmation', message=f'Are you sure you want to delete {SlotList[SlotNumber[0]]}' )
+            if Confirmation:
+                os.system(f'rm -r ~/ThemeSaver/data/{SlotList[SlotNumber[0]]}')
+                LoadSlotsWindow.destroy()
 
         def ForwardBtn():
             global ScreenshotLabel
