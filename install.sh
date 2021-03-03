@@ -30,6 +30,8 @@ Icon=ThemeSaver
 Categories=Utility;" >> ~/.local/share/applications/ThemeSaver.desktop
 
 #Creating alias for python script
-echo "alias themesaver='python3 ~/ThemeSaver/ThemeSaver.py'" >> ~/.bashrc
+echo "#!/bin/bash
+python3 ~/ThemeSaver/ThemeSaver.py \$@"  | sudo tee /usr/local/bin/themesaver > /dev/null
 
-bash
+#Making file executable
+sudo chmod +x /usr/local/bin/themesaver
