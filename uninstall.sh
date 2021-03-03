@@ -12,6 +12,7 @@ sudo rm /usr/local/bin/themesaver
 #Removing xfce4-panel-profiles and other dependencies
 sudo apt -y purge xfce4-panel-profiles xdotool python-pil.imagetk python3-pil python3-pil.imagetk fonts-ubuntu
 sudo apt install -f
+sudo apt -y autoremove
 
 #Removing ThemeSaver folder
 sudo rm -r ~/ThemeSaver
