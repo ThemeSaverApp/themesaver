@@ -158,7 +158,14 @@ def List():
 
 def Del(SlotName):
     if os.path.isdir(f'/home/pi/ThemeSaver/data/{SlotName}'):
-        os.system(f'rm -r /home/pi/ThemeSaver/data/{SlotName}')
+        Confirmation = input(Fore.RED + f'Are you sure you want to delete {SlotName} [Y/n] ')
+        if Confirmation.lower().strip() == 'y':
+            print(Fore.GREEN + 'Ok deleting')
+            os.system(f'rm -r /home/pi/ThemeSaver/data/{SlotName}')
+        elif Confirmation.lower().strip() == 'n':
+            print(Fore.RED + 'Ok not deleting')
+        else:
+            print(Fore.RED + 'Invalid input')
     else:
         print(Fore.RED + 'No Slot like that. Use command "themesaver list" to print the list of slots')
 
@@ -272,7 +279,7 @@ def uninstall():
         os.system('sudo chmod +x ~/ThemeSaver/uninstall.sh')
         os.system('~/ThemeSaver/uninstall.sh')
     elif Confirmation.lower().strip() == 'n':
-        print(Fore.GREEN + 'Ok not uninstalling')
+        print(Fore.RED + 'Ok not uninstalling')
         quit()
     else:
         print(Fore.RED + 'Invalid input')
