@@ -14,5 +14,5 @@ sudo apt -y purge xfce4-panel-profiles xdotool python-pil.imagetk python3-pil py
 sudo apt install -f
 
 #Removing ThemeSaver folder
-rm -r ~/ThemeSaver
+sudo rm -r ~/ThemeSaver
 
