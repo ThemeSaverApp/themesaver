@@ -8,6 +8,12 @@ Run this command in a terminal to install themesaver
 wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.sh | bash
 ```
 
+## Uninstallation
+If you dont like themesaver for some reason you can uninstall it with  
+```
+themesaver uninstall
+```
+
 ## GUI 
 
 ### Theme Saver Main Window
