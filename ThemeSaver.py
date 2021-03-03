@@ -265,6 +265,18 @@ def Import(FilePath):
 
     print(Fore.GREEN + 'Finished importing slot')
 
+def uninstall():
+    Confirmation = input(Fore.CYAN + 'Are you sure you want to uninstall themesaver ? [Y/n] ')
+    if Confirmation.lower().strip() == 'y':
+        print(Fore.GREEN + 'Ok uninstalling')
+        os.system('sudo chmod +x ~/ThemeSaver/uninstall.sh')
+        os.system('~/ThemeSaver/uninstall.sh')
+    elif Confirmation.lower().strip() == 'n':
+        print(Fore.GREEN + 'Ok not uninstalling')
+        quit()
+    else:
+        print(Fore.RED + 'Invalid input')
+
 #Terminal Usage
 if len(sys.argv) > 1:
     if sys.argv[1].lower() == 'load':
@@ -325,6 +337,8 @@ if len(sys.argv) > 1:
         List()
     elif sys.argv[1].lower() == 'gui':
         os.system('python3 ~/ThemeSaver/gui.py')
+    elif sys.argv[1].lower() == 'uninstall':
+        uninstall()
     elif sys.argv[1] == 'help':
         print(Fore.GREEN + 'Available arguments:')
         print(Fore.GREEN + '1) ' + Fore.CYAN + '"save [slotname]"' + Fore.GREEN + ' Save a new slot')
@@ -332,8 +346,8 @@ if len(sys.argv) > 1:
         print(Fore.GREEN + '3) ' + Fore.CYAN + '"del [slotname]"' + Fore.GREEN + ' Delete a slot')
         print(Fore.GREEN + '4) ' + Fore.CYAN + '"ls"' + Fore.GREEN + ' List all saved slots')
         print(Fore.GREEN + '5) ' + Fore.CYAN + '"gui"' + Fore.GREEN + ' Launches GUI for themesaver')
-        print(Fore.GREEN + '6) ' + Fore.CYAN + '"help"' + Fore.GREEN + ' Get a list of available argument')
-        
+        print(Fore.GREEN + '6) ' + Fore.CYAN + '"uninstall"' + Fore.GREEN + ' Uninstalls themesaver :(')
+        print(Fore.GREEN + '7) ' + Fore.CYAN + '"help"' + Fore.GREEN + ' Get a list of available argument')
     else:
         print(Fore.RED + 'Please Enter Valid Argument, Use command "themesaver help" to get a list of available arguments')
 else:
