@@ -54,3 +54,5 @@ Export existing slot (Experimental)
 
 ## Join My Discord Server  
 [![Join our Discord server!](https://invidget.switchblade.xyz/WKdBuBKhgm)](https://discord.gg/WKdBuBKhgm)
+
+Inspired By: https://github.com/paju1986/PlasmaConfSaver/tree/master/com.pajuelo.plasmaConfSaver
