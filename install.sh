@@ -37,11 +37,6 @@ then
     sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick xfce4-panel-profiles   
 fi
 
-sudo python3 -m pip install -U pip
-sudo python3 -m pip install -U setuptools
-pip3 install PyQt5
-pip3 install qtpy
-
 #Copying Icon
 sudo cp ~/ThemeSaver/GUI/Icons/ThemeSaverLogo.png /usr/share/icons/ThemeSaver.png
 
