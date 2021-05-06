@@ -1,37 +1,61 @@
 #!/bin/bash
 
+if [ $DESKTOP_SESSION != 'xfce' ]
+then
+    if [ $DESKTOP_SESSION != 'LXDE-pi' ]
+    then
+        echo "Your Desktop Environment is not supported"
+        exit
+    fi
+fi
+
 if [ ! -d ~/ThemeSaver ];then
     #Cloning github repo
     git clone https://github.com/techcoder20/themesaver ~/ThemeSaver
 fi 
-#Creating file which stores desktop entry name
-echo $DESKTOP_SESSION > ~/ThemeSaver/DesktopEnvironment
-DE=$(cat ~/ThemeSaver/DesktopEnvironment)
-if [ $DE == 'xfce' ];then
-    #Installing xfce4-panel-profiles
-    sudo dpkg -i ~/ThemeSaver/xfce4-panel-profiles.deb
-    #Fixing broken packages if any
-    sudo apt -y install -f
+
+if [ $DESKTOP_SESSION == 'xfce' ];then
+    if command -v apt &> /dev/null
+    then
+        #Installing xfce4-panel-profiles
+        sudo dpkg -i ~/ThemeSaver/xfce4-panel-profiles.deb
+        #Fixing broken packages if any
+        sudo apt -y install -f
+    elif command -v pacman &> /dev/null
+    then
+        sudo pacman -S xfce4-panel-profiles
+    fi
 fi
+
 #Installing dependencies
-sudo apt update
-sudo apt -y install xdotool python-pil.imagetk python3-pil python3-pil.imagetk fonts-ubuntu
+if command -v apt &> /dev/null
+then
+    sudo apt update
+    sudo apt -y install xdotool fonts-ubuntu imagemagick python-pyqt5
+elif command -v pacman &> /dev/null
+then
+    sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick xfce4-panel-profiles   
+fi
+
+sudo python3 -m pip install -U pip
+sudo python3 -m pip install -U setuptools
+pip3 install PyQt5
+pip3 install qtpy
 
 #Copying Icon
-sudo cp ~/ThemeSaver/ThemeSaver.png /usr/share/icons
+sudo cp ~/ThemeSaver/GUI/Icons/ThemeSaverLogo.png /usr/share/icons/ThemeSaver.png
 
-#Creating Desktop Entry
+#Creating Desktop Entry And Binary
 echo "[Desktop Entry]
 Type=Application
 Terminal=false
-Exec=python3 /home/$USER/ThemeSaver/gui.py
+Exec=python3 /home/$USER/ThemeSaver/GUI/MainWindow.py
 Name=ThemeSaver
 Icon=ThemeSaver
-Categories=Utility;" >> ~/.local/share/applications/ThemeSaver.desktop
+Categories=Utility;" > ~/.local/share/applications/ThemeSaver.desktop
 
-#Creating alias for python script
-echo "#!/bin/bash
-python3 ~/ThemeSaver/ThemeSaver.py \$@"  | sudo tee /usr/local/bin/themesaver > /dev/null
+echo '#!/bin/bash
+python3 ~/ThemeSaver/ThemeSaver.py "$1" "$2" "$3"'  | sudo tee /usr/local/bin/themesaver > /dev/null
 
-#Making file executable
 sudo chmod +x /usr/local/bin/themesaver
+
