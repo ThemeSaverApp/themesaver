@@ -1,11 +1,45 @@
 # Theme Saver
-This is a python program whose aim is to help you save, load and share your different linux rices. 
+<p align="center">
+  <img width="400" src="https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/GUI/Icons/ThemeSaverLogo.png">  
+</p>
 
-## What Is A Linux Rice 
-What is a linux rice you may ask ? The term 'rice' is used to describe a person's unix deskton where someone has customized their desktop such as the icons, panels, or system interface. A great place to find different linux rice is the r/unixporn subreddit. 
+
+<p align="center">
+  <img width="200" src="https://img.shields.io/badge/Platform-GNU/Linux-orange?style=for-the-badge&logo=Linux&	for-the-badge">
+
+  <img width="150" src="https://img.shields.io/badge/DE-XFCE/LXDE-blue?style=for-the-badge&logo=XFCE&	for-the-badge">
+
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/techcoder20/themesaver?logo=Python&style=for-the-badge">
+
+</p>
+
+<p align="center">
+This is a python program whose aim is to help you save, load and share your different linux rices.  
+</p>
+
+## What Is A Linux Rice ?
+The term 'rice' is used to describe a person's unix deskton where someone has customized their desktop such as the icons, panels, or system interface. A great place to find different linux rice is the r/unixporn subreddit.   
 
 ## Why Should You Use The App
-Now why should you use the themesaver app ? Setting up a rice takes a lot of work. You need to install the themes copy themes to the specific folders and if you find a rice you like it could be a little hard copying the file to the specific place if your a noob to ricing. Wont it be simple if you could just link to one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles. 
+Setting up a rice takes a lot of work. You need to install the themes, copy the themes to their specific folders and if you find a rice you like it could be a little hard copying the file to the specific place if your a noob to ricing. Wont it be simple if you could just download one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles. 
+
+## Screenshots
+![AllWindows](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/AllWindows.png)
+
+![LoadingWindow](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/LoadingWindow.png)
+
+### Main Window
+The main window houses the four buttons the `NewSlot`, `ImportSlot`, `LoadSlot`, and the `Shop` (Coming Soon) button.    
+![MainWindow](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/MainWindow.png)
+
+### Save New Slot Window
+The Save Slot Window houses one input text box and a confirm button. You can save the current rice by clicking on the confirm button. After you clicked the confirm button wait till you see the a window which says `Finished Saving`. If you try to save a slot with a name which that already exists you will get a popup asking you if you want to overwrite it.  
+![SaveNewSlotWindow](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/SaveNewSlotWindow.png)
+
+### Load Slots Window
+The Load Slots Winow will help you browse through all your slots and perform different actions on them. Some of the actions which you can perform on the slots are, that you can delete the slot, you can export the slot to a specific slot which will give you a tar.gz archive and finally you can load the slot. If you have not saved any slots you will get a popup saying that `There Are No Saved Slots :(`  
+![LoadSlotsWindow](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/LoadSlotsWindow.png)
+
 
 ## Installation
 If the app has intrigued you you can install it by running this command in a terminal to install themesaver. ***Note***: This only works on `xfce` or `LXDE`.
@@ -13,11 +47,24 @@ If the app has intrigued you you can install it by running this command in a ter
 wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.sh | bash
 ```
 
-## Uninstallation
-If you dont like themesaver for some reason you can uninstall by running this command in a terminal.
+<details>
+<summary>To Install Manually</summary>
+To manually install ThemeSaver:
+ 
+```
+git clone https://github.com/techcoer20/themesaver ~/ThemeSaver
+~/ThemeSaver/install.sh
+```
+</details>
+
+<details>
+<summary>Uninstallation</summary>
+If you dont like themesaver for some reason you can uninstall by running this command in a terminal.  
+
 ```
 themesaver uninstall
 ```
+</details>   
 
 ## Features/Terminal Usage
 These are a list of features which can use and also the syntax you need to use while running the commands in a terminal.
