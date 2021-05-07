@@ -34,7 +34,7 @@ then
     sudo apt -y install xdotool fonts-ubuntu imagemagick python-pyqt5
 elif command -v pacman &> /dev/null
 then
-    sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick xfce4-panel-profiles   
+    sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick xfce4-panel-profiles python-pyqt5
 fi
 
 #Copying Icon
