@@ -5,16 +5,16 @@
 
 
 <p align="center">
-  <img width="200" src="https://img.shields.io/badge/Platform-GNU/Linux-orange?style=for-the-badge&logo=Linux&	for-the-badge">
+  <img src="https://img.shields.io/badge/Platform-GNU/Linux-orange?style=for-the-badge&logo=Linux">
 
-  <img width="150" src="https://img.shields.io/badge/DE-XFCE/LXDE-blue?style=for-the-badge&logo=XFCE&	for-the-badge">
+  <img src="https://img.shields.io/badge/DE-XFCE/LXDE-blue?style=for-the-badge&logo=XFCE">
 
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/techcoder20/themesaver?logo=Python&style=for-the-badge">
 
 </p>
 
 <p align="center">
-This is a python program whose aim is to help you save, load and share your different linux rices.  
+<b> An app to help you save, load and share your different linux rices </b>
 </p>
 
 ## What Is A Linux Rice ?
@@ -25,8 +25,6 @@ Setting up a rice takes a lot of work. You need to install the themes, copy the 
 
 ## Screenshots
 ![AllWindows](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/AllWindows.png)
-
-![LoadingWindow](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/LoadingWindow.png)
 
 ### Main Window
 The main window houses the four buttons the `NewSlot`, `ImportSlot`, `LoadSlot`, and the `Shop` (Coming Soon) button.    
