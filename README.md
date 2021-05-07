@@ -18,10 +18,10 @@
 </p>
 
 ## What Is A Linux Rice ?
-The term 'rice' is used to describe a person's unix deskton where someone has customized their desktop such as the icons, panels, or system interface. A great place to find different linux rice is the r/unixporn subreddit.   
+The term 'rice' is used to describe a person's unix desktop where someone has customized their desktop such as the icons, panels, or system interface. A great place to find different linux rice is the r/unixporn subreddit.   
 
-## Why Should You Use The App
-Setting up a rice takes a lot of work. You need to install the themes, copy the themes to their specific folders and if you find a rice you like it could be a little hard copying the file to the specific place if your a noob to ricing. Wont it be simple if you could just download one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles. 
+## Why Should You Use This App
+Setting up a rice takes a lot of work. You need to install, copy the themes to their specific folders and if you find a rice you like it could be hard copying the file to the specific place if you're a noob in ricing. Wouldnt it be simple if you could just download one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles. 
 
 ## Screenshots
 ![AllWindows](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/AllWindows.png)
