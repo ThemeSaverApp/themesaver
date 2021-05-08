@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $DESKTOP_SESSION != 'xfce' ] && if [ $DESKTOP_SESSION != 'LXDE-pi' ]
+if [ $DESKTOP_SESSION != 'xfce' ] && [ $DESKTOP_SESSION != 'LXDE-pi' ]
 then
     echo "Your Desktop Environment is not supported"
     exit 1
