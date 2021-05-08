@@ -1,12 +1,9 @@
 #!/bin/bash
 
-if [ $DESKTOP_SESSION != 'xfce' ]
+if [ $DESKTOP_SESSION != 'xfce' ] && if [ $DESKTOP_SESSION != 'LXDE-pi' ]
 then
-    if [ $DESKTOP_SESSION != 'LXDE-pi' ]
-    then
-        echo "Your Desktop Environment is not supported"
-        exit
-    fi
+    echo "Your Desktop Environment is not supported"
+    exit 1
 fi
 
 if [ ! -d ~/ThemeSaver ];then
@@ -40,11 +37,13 @@ fi
 #Copying Icon
 sudo cp ~/ThemeSaver/GUI/Icons/ThemeSaverLogo.png /usr/share/icons/ThemeSaver.png
 
+mkdir ~/ThemeSaver/Slots
+
 #Creating Desktop Entry And Binary
 echo "[Desktop Entry]
 Type=Application
 Terminal=false
-Exec=python3 /home/$USER/ThemeSaver/GUI/MainWindow.py
+Exec=python3 $HOME/ThemeSaver/GUI/MainWindow.py
 Name=ThemeSaver
 Icon=ThemeSaver
 Categories=Utility;" > ~/.local/share/applications/ThemeSaver.desktop
