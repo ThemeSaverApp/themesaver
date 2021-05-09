@@ -5,28 +5,26 @@
 
 
 <p align="center">
-  <img width="200" src="https://img.shields.io/badge/Platform-GNU/Linux-orange?style=for-the-badge&logo=Linux&	for-the-badge">
+  <img src="https://img.shields.io/badge/Platform-GNU/Linux-orange?style=for-the-badge&logo=Linux">
 
-  <img width="150" src="https://img.shields.io/badge/DE-XFCE/LXDE-blue?style=for-the-badge&logo=XFCE&	for-the-badge">
+  <img src="https://img.shields.io/badge/DE-XFCE/LXDE-blue?style=for-the-badge&logo=XFCE">
 
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/techcoder20/themesaver?logo=Python&style=for-the-badge">
 
 </p>
 
 <p align="center">
-This is a python program whose aim is to help you save, load and share your different linux rices.  
+<b> An app to help you save, load and share your different linux rices </b>
 </p>
 
 ## What Is A Linux Rice ?
-The term 'rice' is used to describe a person's unix deskton where someone has customized their desktop such as the icons, panels, or system interface. A great place to find different linux rice is the r/unixporn subreddit.   
+The term 'rice' is used to describe a person's unix desktop where someone has customized their desktop such as the icons, panels, or system interface. A great place to find different linux rice is the [r/unixporn](https://www.reddit.com/r/unixporn) subreddit.   
 
-## Why Should You Use The App
-Setting up a rice takes a lot of work. You need to install the themes, copy the themes to their specific folders and if you find a rice you like it could be a little hard copying the file to the specific place if your a noob to ricing. Wont it be simple if you could just download one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles. 
+## Why Should You Use This App
+Setting up a rice takes a lot of work. You need to install, copy the themes to their specific folders and if you find a rice you like it could be hard copying the file to the specific place if you're a noob in ricing. Wouldnt it be simple if you could just download one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles. 
 
 ## Screenshots
 ![AllWindows](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/AllWindows.png)
-
-![LoadingWindow](https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/Screenshots/LoadingWindow.png)
 
 ### Main Window
 The main window houses the four buttons the `NewSlot`, `ImportSlot`, `LoadSlot`, and the `Shop` (Coming Soon) button.    
@@ -91,4 +89,16 @@ Import a slot (Does not work on LXDE)
 
 7. `themesaver export [SlotName] [FilePath]`  
 Export existing slot (Does not work on LXDE)
+
+## Credits
+
+<b>I got the icons for the app from flaticon.com so here are the attributes for them :)</b>   
+<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+<div>Icons made by <a href="https://www.flaticon.com/authors/bqlqn" title="bqlqn">bqlqn</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+<div>Icons made by <a href="https://www.flaticon.com/authors/chanut" title="Chanut">Chanut</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+<div>Icons made by <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>       
+   
+   
+This app was inspired by: https://github.com/paju1986/PlasmaConfSaver
 
