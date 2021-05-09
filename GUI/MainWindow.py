@@ -8,7 +8,9 @@ from PyQt5.QtCore import QDir
 TODO:
 -> Create shop
 -> Check if There is a slot with that name while importing
--> Add load bar for import and export slot
+-> Change the button names to something creative
+-> Add option for grid view
+-> Create Settings
 Idea: Not letting themesaver be installed if desktop environment is not supported reducing my work :)
 '''
 

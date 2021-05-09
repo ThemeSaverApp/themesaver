@@ -1,12 +1,9 @@
 #!/bin/bash
 
-if [ $DESKTOP_SESSION != 'xfce' ]
+if [ $DESKTOP_SESSION != 'xfce' ] && [ $DESKTOP_SESSION != 'LXDE-pi' ] && [ $DESKTOP_SESSION != 'awesome' ]
 then
-    if [ $DESKTOP_SESSION != 'LXDE-pi' ]
-    then
-        echo "Your Desktop Environment is not supported"
-        exit
-    fi
+    echo "Your Desktop Environment is not supported"
+    exit 1
 fi
 
 if [ ! -d ~/ThemeSaver ];then
@@ -34,17 +31,19 @@ then
     sudo apt -y install xdotool fonts-ubuntu imagemagick python-pyqt5
 elif command -v pacman &> /dev/null
 then
-    sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick xfce4-panel-profiles   
+    sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick python-pyqt5
 fi
 
 #Copying Icon
 sudo cp ~/ThemeSaver/GUI/Icons/ThemeSaverLogo.png /usr/share/icons/ThemeSaver.png
 
+mkdir ~/ThemeSaver/Slots
+
 #Creating Desktop Entry And Binary
 echo "[Desktop Entry]
 Type=Application
 Terminal=false
-Exec=python3 /home/$USER/ThemeSaver/GUI/MainWindow.py
+Exec=python3 $HOME/ThemeSaver/GUI/MainWindow.py
 Name=ThemeSaver
 Icon=ThemeSaver
 Categories=Utility;" > ~/.local/share/applications/ThemeSaver.desktop
@@ -53,4 +52,3 @@ echo '#!/bin/bash
 python3 ~/ThemeSaver/ThemeSaver.py "$1" "$2" "$3"'  | sudo tee /usr/local/bin/themesaver > /dev/null
 
 sudo chmod +x /usr/local/bin/themesaver
-
