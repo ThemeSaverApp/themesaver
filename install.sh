@@ -31,7 +31,7 @@ then
     sudo apt -y install xdotool fonts-ubuntu imagemagick python3-pyqt5
 elif command -v pacman &> /dev/null
 then
-    sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick python3-pyqt5
+    sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick python-pyqt5
 fi
 
 #Copying Icon
