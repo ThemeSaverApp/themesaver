@@ -28,7 +28,7 @@ fi
 if command -v apt &> /dev/null
 then
     sudo apt update
-    sudo apt -y install xdotool fonts-ubuntu imagemagick python-pyqt5
+    sudo apt -y install xdotool fonts-ubuntu imagemagick python3-pyqt5
 elif command -v pacman &> /dev/null
 then
     sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick python-pyqt5
