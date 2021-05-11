@@ -24,7 +24,7 @@ def SaveSlot(SlotName, DesktopEnvironment):
         if Overwrite.lower() == 'y':
             print(Fore.GREEN + 'Okay overwriting')
             #Removing old slot
-            os.system(f'sudo rm -r ~/ThemeSaver/Slots/"{SlotName}"')
+            os.system(f'sudo rm -rf ~/ThemeSaver/Slots/"{SlotName}"')
         else:
             print(Fore.GREEN + 'Not overwriting')
             #Stopping the program if user does not want to overwrite
@@ -48,6 +48,24 @@ def SaveSlot(SlotName, DesktopEnvironment):
         for PlankProperty in PlankProperties:
             os.system(f'gsettings get net.launchpad.plank.dock.settings:/net/launchpad/plank/docks/dock1/ {PlankProperty} > ~/ThemeSaver/Slots/"{SlotName}"/plank/{PlankProperty}')    
 
+    # Saving Polybar Configs If Running
+    PolybarRunning = os.popen('pgrep plank').read()
+    if PolybarRunning != '':
+        os.system(f'cp -rf ~/.config/polybar ~/ThemeSaver/Slots/"{SlotName}/"')
+
+    # Storing Fish and OMF Fish configs
+    if os.environ['SHELL'].strip() == '/usr/bin/fish':
+        os.system(f'mkdir ~/ThemeSaver/Slots/"{SlotName}"/fish')
+        os.system(f'cp -rf ~/.config/fish ~/ThemeSaver/Slots/"{SlotName}"/fish')
+        os.system(f'cp -rf ~/.config/omf ~/ThemeSaver/Slots/"{SlotName}"/fish')
+
+    if os.path.isfile('/usr/bin/rofi'):
+        os.system(f'cp -rf ~/.config/rofi ~/ThemeSaver/Slots/"{SlotName}"/')
+
+    if os.path.isfile('/usr/bin/nitrogen'):
+        os.system(f'cp -rf ~/.config/nitrogen ~/ThemeSaver/Slots/"{SlotName}"/')
+
+
     if DesktopEnvironment == 'xfce':
         for channel in RequiredChannelsXfce:
             os.system(f'xfconf-query -c {channel.strip()} -l > ~/ThemeSaver/Slots/{channel.strip()}')
@@ -63,10 +81,10 @@ def SaveSlot(SlotName, DesktopEnvironment):
     
     if DesktopEnvironment == 'lxde':
         for folder in RequiredFoldersLXDE:
-            os.system(f'cp -r ~/.config/{folder} ~/ThemeSaver/Slots/"{SlotName}"')
+            os.system(f'cp -rf ~/.config/{folder} ~/ThemeSaver/Slots/"{SlotName}"')
     
     if DesktopEnvironment == 'awesome':
-        os.system(f'cp -r ~/.config/awesome ~/ThemeSaver/Slots/"{SlotName}"')
+        os.system(f'cp -rf ~/.config/awesome ~/ThemeSaver/Slots/"{SlotName}"')
 
         
 def LoadSlot(SlotName, DesktopEnvironment):
@@ -84,6 +102,22 @@ def LoadSlot(SlotName, DesktopEnvironment):
     else:
         subprocess.Popen(['killall', 'plank'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
+    if os.path.isdir(f'{HomePath}/ThemeSaver/Slots/{SlotName}/fish'):
+        os.system(f'cp -rf ~/ThemeSaver/Slots/"{SlotName}"/fish/fish ~/.config/')
+        os.system(f'cp -rf ~/ThemeSaver/Slots/"{SlotName}"/fish/omf ~/.config/')
+
+    if os.path.isdir(f'{HomePath}/ThemeSaver/Slots/{SlotName}/rofi'):
+        os.system(f'cp -rf ~/ThemeSaver/Slots/"{SlotName}"/rofi ~/.config/')
+
+    if os.path.isdir(f'{HomePath}/ThemeSaver/Slots/{SlotName}/nitrogen'):
+        os.system(f'cp -rf ~/ThemeSaver/Slots/"{SlotName}"/nitrogen ~/.config/')
+
+    if os.path.isdir(f'{HomePath}/ThemeSaver/Slots/{SlotName}/polybar'):
+        os.system('cp -rf ~/ThemeSaver/polybar ~/.config')
+        os.system('polybar --reload &')
+    else:
+        subprocess.Popen(['killall', 'polybar'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
     if DesktopEnvironment == 'xfce':
         for PropertyFolders in RequiredChannelsXfce:
             for PropertyFiles in os.listdir(f'{HomePath}/ThemeSaver/Slots/{SlotName}/{PropertyFolders}'):
@@ -98,8 +132,8 @@ def LoadSlot(SlotName, DesktopEnvironment):
    
     if DesktopEnvironment == 'lxde':
         for folder in RequiredFoldersLXDE:
-            os.system(f'sudo rm -r ~/.config/{folder}')
-            os.system(f'cp -r ~/ThemeSaver/Slots/"{SlotName}"/{folder} ~/.config')
+            os.system(f'sudo rm -rf ~/.config/{folder}')
+            os.system(f'cp -rf ~/ThemeSaver/Slots/"{SlotName}"/{folder} ~/.config')
 
         # Refreshing Desktop
         subprocess.Popen(['killall', 'openbox-lxde-pi', 'openbox', 'pcmanfm', 'lxpanel'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
@@ -111,8 +145,9 @@ def LoadSlot(SlotName, DesktopEnvironment):
         subprocess.Popen(['nohup', 'pcmanfm', '--desktop', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
     if DesktopEnvironment == 'awesome':
-        os.system(f'cp -r ~/ThemeSaver/Slots/"{SlotName}"/awesome ~/.config')
+        os.system(f'cp -rf ~/ThemeSaver/Slots/"{SlotName}"/awesome ~/.config')
         os.system('xdotool key ctrl+Super+r')
+        os.system('nitrogen --restore')
 
 def List():
     SlotNumber = 0
@@ -126,7 +161,7 @@ def Del(SlotName):
         Confirmation = input(Fore.RED + f'Are you sure you want to delete "{SlotName}" [Y/n] ')
         if Confirmation.lower().strip() == 'y':
             print(Fore.GREEN + 'Ok deleting')
-            os.system(f'rm -r {HomePath}/ThemeSaver/Slots/"{SlotName}"')
+            os.system(f'rm -rf {HomePath}/ThemeSaver/Slots/"{SlotName}"')
         elif Confirmation.lower().strip() == 'n':
             print(Fore.RED + 'Ok not deleting')
         else:
@@ -149,27 +184,27 @@ def Export(SlotName, ExportPath):
     Theme = Theme.strip()
     os.system(f'mkdir {ExportPath}/"{SlotName}"/theme')
     if os.path.isdir(f'{HomePath}/.themes/{Theme}'):
-        os.system(f'cp -r ~/.themes/{Theme} {ExportPath}/"{SlotName}"/theme/')
+        os.system(f'cp -rf ~/.themes/{Theme} {ExportPath}/"{SlotName}"/theme/')
     elif os.path.isdir(f'/usr/share/themes/{Theme}'):
-        os.system(f'cp -r /usr/share/themes/{Theme} {ExportPath}/"{SlotName}"/theme/')
+        os.system(f'cp -rf /usr/share/themes/{Theme} {ExportPath}/"{SlotName}"/theme/')
 
     IconThemeFile = open(f'{HomePath}/ThemeSaver/Slots/{SlotName}/xsettings/+Net+IconThemeName')
     IconTheme = IconThemeFile.read()
     IconTheme = IconTheme.strip()
     os.system(f'mkdir {ExportPath}/"{SlotName}"/icons')
     if os.path.isdir(f'{HomePath}/.icons/{IconTheme}'):
-        os.system(f'cp -r ~/.icons/{IconTheme} {ExportPath}/"{SlotName}"/icons/')
+        os.system(f'cp -rf ~/.icons/{IconTheme} {ExportPath}/"{SlotName}"/icons/')
     elif os.path.isdir(f'/usr/share/icons/{IconTheme}'):
-        os.system(f'cp -r /usr/share/icons/{IconTheme} {ExportPath}/"{SlotName}"/icons/')
+        os.system(f'cp -rf /usr/share/icons/{IconTheme} {ExportPath}/"{SlotName}"/icons/')
 
     CursorThemeFile = open(f'{HomePath}/ThemeSaver/Slots/{SlotName}/xsettings/+Gtk+CursorThemeName')
     CursorTheme = CursorThemeFile.read()
     CursorTheme = CursorTheme.strip()
     os.system(f'mkdir {ExportPath}/"{SlotName}"/cursors')
     if os.path.isdir(f'{HomePath}/.icons/{CursorTheme}'):
-        os.system(f'cp -r ~/.icons/{CursorTheme} {ExportPath}/"{SlotName}"/cursors/')
+        os.system(f'cp -rf ~/.icons/{CursorTheme} {ExportPath}/"{SlotName}"/cursors/')
     elif os.path.isdir(f'/usr/share/icons/{CursorTheme}'):
-        os.system(f'cp -r /usr/share/icons/{CursorTheme} {ExportPath}/"{SlotName}"/cursors/')
+        os.system(f'cp -rf /usr/share/icons/{CursorTheme} {ExportPath}/"{SlotName}"/cursors/')
 
 
     if os.path.isdir(f'{HomePath}/ThemeSaver/Slots/{SlotName}/plank'):
@@ -178,9 +213,9 @@ def Export(SlotName, ExportPath):
         PlankTheme = PlankTheme.strip().replace("'", '')
         os.system(f'mkdir {ExportPath}/"{SlotName}"/plank')
         if os.path.isdir(f'{HomePath}/.local/share/plank/themes/{PlankTheme}'):
-            os.system(f'cp -r {HomePath}/.local/share/plank/themes/{PlankTheme} {ExportPath}/"{SlotName}"/plank')
+            os.system(f'cp -rf {HomePath}/.local/share/plank/themes/{PlankTheme} {ExportPath}/"{SlotName}"/plank')
         elif os.path.isdir(f'/usr/share/plank/themes/{PlankTheme}'):
-            os.system(f'cp -r /usr/share/plank/themes/{PlankTheme} {ExportPath}/"{SlotName}"/plank')
+            os.system(f'cp -rf /usr/share/plank/themes/{PlankTheme} {ExportPath}/"{SlotName}"/plank')
 
 
     WallpaperFile = open(f'{HomePath}/ThemeSaver/Slots/{SlotName}/xfce4-desktop/+backdrop+screen0+monitor0+workspace0+last-image')
@@ -190,11 +225,11 @@ def Export(SlotName, ExportPath):
     os.system(f'cp {Wallpaper} {ExportPath}/"{SlotName}"/wallpaper/')
 
     os.system(f'mkdir {ExportPath}/"{SlotName}"/slot/')
-    os.system(f'cp -r ~/ThemeSaver/Slots/"{SlotName}" {ExportPath}/"{SlotName}"/slot/')
+    os.system(f'cp -rf ~/ThemeSaver/Slots/"{SlotName}" {ExportPath}/"{SlotName}"/slot/')
     tar = tarfile.open(f'{ExportPath}/{SlotName}.tar.gz', 'w:gz')
     tar.add(f'{ExportPath}/{SlotName}', arcname=f'{SlotName}')
     tar.close()
-    os.system(f'rm -r {ExportPath}/"{SlotName}"')
+    os.system(f'rm -rf {ExportPath}/"{SlotName}"')
     print(Fore.GREEN + 'Finished exporting slot ')
 
 def Import(FilePath):
@@ -205,7 +240,7 @@ def Import(FilePath):
         print(Fore.RED + 'No File Like That')
         quit()
     #Removing and creating import directory
-    os.system('rm -r ~/ThemeSaver/import/')
+    os.system('rm -rf ~/ThemeSaver/import/')
     os.system('mkdir ~/ThemeSaver/import/')
 
     #Extracting archive
@@ -215,19 +250,19 @@ def Import(FilePath):
 
     #Copying themes and other stuff
     print(Fore.GREEN + 'Copying slot')
-    os.system(f'cp -r {HomePath}/ThemeSaver/import/*/slot/* ~/ThemeSaver/Slots/')
+    os.system(f'cp -rf {HomePath}/ThemeSaver/import/*/slot/* ~/ThemeSaver/Slots/')
 
     print(Fore.GREEN + 'Copying themes')
-    os.system(f'sudo cp -r {HomePath}/ThemeSaver/import/*/theme/* /usr/share/themes/')
+    os.system(f'sudo cp -rf {HomePath}/ThemeSaver/import/*/theme/* /usr/share/themes/')
 
     print(Fore.GREEN + 'Copying icons')
-    os.system(f'sudo cp -r {HomePath}/ThemeSaver/import/*/icons/* /usr/share/icons/')
+    os.system(f'sudo cp -rf {HomePath}/ThemeSaver/import/*/icons/* /usr/share/icons/')
 
     print(Fore.GREEN + 'Copying cursors')
-    os.system(f'sudo cp -r {HomePath}/ThemeSaver/import/*/cursors/* /usr/share/icons/')
+    os.system(f'sudo cp -rf {HomePath}/ThemeSaver/import/*/cursors/* /usr/share/icons/')
 
     print(Fore.GREEN + 'Copying plank theme')
-    os.system(f'sudo cp -r {HomePath}/ThemeSaver/import/*/plank/* /usr/share/plank/themes/')
+    os.system(f'sudo cp -rf {HomePath}/ThemeSaver/import/*/plank/* /usr/share/plank/themes/')
 
     print(Fore.GREEN + 'Copying wallpaper')
     os.system(f'echo $(cat {HomePath}/ThemeSaver/import/*/slot/*/xfce4-desktop/+backdrop+screen0+monitor0+workspace0+last-image) > ~/ThemeSaver/import/wallpaperpath')
@@ -236,7 +271,7 @@ def Import(FilePath):
     os.system(f'sudo cp ~/ThemeSaver/import/*/wallpaper/* {WallpaperPath}')
 
     #Removing import directory after copying files
-    os.system('rm -r ~/ThemeSaver/import')
+    os.system('rm -rf ~/ThemeSaver/import')
 
     print(Fore.GREEN + 'Finished importing slot :)')
 

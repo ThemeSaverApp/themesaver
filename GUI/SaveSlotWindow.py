@@ -62,7 +62,7 @@ class Ui_MainWindow(QWidget):
                         if os.path.isdir(f"{FolderPath}/Slots/{SlotName}"):
                                 Overwrite = QMessageBox.question(self, 'Overwrite ?', 'A slot with that name already exists, Do you want to overwrite it ?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                                 if Overwrite == QMessageBox.Yes:  
-                                        os.system(f"themesaver del '{SlotName}'")
+                                        os.system(f"rm -r ~/ThemeSaver/Slots/'{SlotName}'")
                                         os.system(f"themesaver save '{SlotName}'")     
                                         
                         else:
