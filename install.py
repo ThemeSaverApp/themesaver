@@ -33,7 +33,7 @@ if Desktop_Environment == 'xfce':
     
 # Cloning Repo
 if not os.path.isdir(f"{os.environ['HOME']}/.themesaver/"):
-    os.system("git clone https://github.com/techcoder20/themesaver ~/ThemeSaver")
+    os.system("git clone https://github.com/techcoder20/themesaver ~/.themesaver")
 
 # Creating Desktop Entry
 os.system("mkdir ~/.local/share/applications")
@@ -53,6 +53,7 @@ Categories=Utility;
 #Creating Binary
 os.system('sudo touch /usr/local/bin/themesaver')
 os.system(f'sudo chown $USER:$USER /usr/local/bin/themesaver')
+os.system(f'sudo chmod +x /usr/local/bin/themesaver')
 with open(f"/usr/local/bin/themesaver", "w") as BinaryFile:
     BinaryFile.write(
 '''
