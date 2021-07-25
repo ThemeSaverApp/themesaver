@@ -42,7 +42,7 @@ The Load Slots Winow will help you browse through all your slots and perform dif
 ## Installation
 If the app has intrigued you you can install it by running this command in a terminal to install themesaver. ***Note***: This only works on `xfce` or `LXDE`.
 ```
-wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.py | python3
 ```
 
 <details>
@@ -51,7 +51,7 @@ To manually install ThemeSaver:
  
 ```
 git clone https://github.com/techcoer20/themesaver ~/ThemeSaver
-~/ThemeSaver/install.sh
+python3 ~/.themesaver/install.py
 ```
 </details>
 
