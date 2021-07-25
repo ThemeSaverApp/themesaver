@@ -62,5 +62,5 @@ python3 ~/.themesaver/ThemeSaver.py "$1" "$2" "$3"
 '''
 )
 
-os.system('sudo cp ~/ThemeSaver/GUI/Icons/ThemeSaverLogo.png /usr/share/icons/ThemeSaver.png')
+os.system('sudo cp ~/.themesaver/GUI/Icons/ThemeSaverLogo.png /usr/share/icons/ThemeSaver.png')
 os.system('sudo rm -f ~/.themesaver/xfce4-panel-profiles.deb')
