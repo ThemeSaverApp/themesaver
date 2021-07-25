@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt
 
 class Ui_MainWindow(QMainWindow):
     def setupUi(self, MainWindow):
-        FolderPath = f"{os.environ['HOME']}/ThemeSaver"
+        FolderPath = f"{os.environ['HOME']}/.themesaver"
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(331, 81)
         MainWindow.setMaximumSize(331, 81)

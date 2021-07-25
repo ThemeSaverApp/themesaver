@@ -7,7 +7,7 @@ from PyQt5.QtCore import QDir
 class Ui_LoadSlotWindow(QWidget):
     def setupUi(self, LoadSlotWindow):
         global FolderPath
-        FolderPath = f"{os.environ['HOME']}/ThemeSaver"
+        FolderPath = f"{os.environ['HOME']}/.themesaver"
         LoadSlotWindow.setObjectName("LoadSlotWindow")
         LoadSlotWindow.resize(620, 418)
         LoadSlotWindow.setMaximumSize(QtCore.QSize(620, 418))
@@ -117,8 +117,12 @@ class Ui_LoadSlotWindow(QWidget):
 
         def ExportBtn():
                 global CurrentSlot
-                DesktopEnvironment = os.environ["DESKTOP_SESSION"]
-                if DesktopEnvironment != 'LXDE-pi':
+                if "DESKTOP_SESSION" in os.environ:
+                        Desktop_Environment = os.environ["DESKTOP_SESSION"]
+                else:    
+                        Desktop_Environment = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '')    
+                SupportedDesktopWindowEnvironments = ['xfce']
+                if  Desktop_Environment.lower() in SupportedDesktopWindowEnvironments:
                         ExportPath = QFileDialog.getExistingDirectory(self, 'Open file', f'{FolderPath}')
                         os.system(f"python3 {FolderPath}/GUI/LoadingWindow.py '     Exporting Slot...' &")
                         os.system(f"themesaver export '{SlotNames[CurrentSlot]}' {ExportPath}")
@@ -128,7 +132,7 @@ class Ui_LoadSlotWindow(QWidget):
                         run = FinishedExporting.exec_()
                 else:
                         NoLXDE = QMessageBox()
-                        NoLXDE.setText("Import Slot is not ready for LXDE yet :(")
+                        NoLXDE.setText("Import Slot is not ready for your desktop environment yet :(")
                         run = NoLXDE.exec_()
 
         self.retranslateUi(LoadSlotWindow)

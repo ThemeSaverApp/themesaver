@@ -11,13 +11,12 @@ TODO:
 -> Change the button names to something creative
 -> Add option for grid view
 -> Create Settings
-Idea: Not letting themesaver be installed if desktop environment is not supported reducing my work :)
 '''
 
 
 class Ui_MainWindow(QWidget):
     def setupUi(self, MainWindow):
-        FolderPath = f"{os.environ['HOME']}/ThemeSaver"
+        FolderPath = f"{os.environ['HOME']}/.themesaver"
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(332, 362)
         MainWindow.setMaximumSize(QtCore.QSize(332, 362))
@@ -123,8 +122,12 @@ class Ui_MainWindow(QWidget):
                 os.system(f"python3 {FolderPath}/GUI/LoadSlotWindow.py &")
 
         def ImportSlot():
-                DesktopEnvironment = os.environ["DESKTOP_SESSION"]
-                if DesktopEnvironment != 'LXDE-pi':
+                if "DESKTOP_SESSION" in os.environ:
+                        Desktop_Environment = os.environ["DESKTOP_SESSION"]
+                else:    
+                        Desktop_Environment = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '')    
+                SupportedDesktopWindowEnvironments = ['xfce']
+                if  Desktop_Environment.lower() in SupportedDesktopWindowEnvironments:
                         ImportFile=QFileDialog.getOpenFileName(self, 'Open file', f'{FolderPath}', 'tar.gz archive (*.tar.gz)')
                         os.system(f"python3 {FolderPath}/GUI/LoadingWindow.py '     Importing Slot...' &")
                         print(ImportFile[0])
@@ -135,7 +138,7 @@ class Ui_MainWindow(QWidget):
                         run = FinishedImporting.exec_()
                 else:
                         NoLXDE = QMessageBox()
-                        NoLXDE.setText("Import Slot is not ready for LXDE yet :(")
+                        NoLXDE.setText("Import Slot is not ready for your desktop environment yet :(")
                         run = NoLXDE.exec_()
 
         def Shop():
