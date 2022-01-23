@@ -1,166 +1,127 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-import os
-import sys
-from PyQt5.QtWidgets import (QApplication, QWidget, QFileDialog, QTextEdit, QPushButton, QLabel, QVBoxLayout, QMessageBox)
-from PyQt5.QtGui import QPixmap
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import (QApplication, QWidget, QDialog ,QFileDialog, QTextEdit, QPushButton, QLabel, QVBoxLayout, QMessageBox, QMainWindow)
+from PyQt5.QtGui import QPixmap, QPalette, QMovie
 from PyQt5.QtCore import QDir
-'''
-TODO:
--> Create shop
--> Check if There is a slot with that name while importing
--> Change the button names to something creative
--> Add option for grid view
--> Create Settings
-'''
+import os
+import subprocess
+import sys
+import time
+import webbrowser
+from dotenv import load_dotenv, dotenv_values
+import tarfile
+from pathlib import Path
 
 
-class Ui_MainWindow(QWidget):
-    def setupUi(self, MainWindow):
-        FolderPath = f"{os.environ['HOME']}/.themesaver"
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(332, 362)
-        MainWindow.setMaximumSize(QtCore.QSize(332, 362))
-        MainWindow.setStyleSheet("background-color: rgb(247, 137, 20);")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/ThemeSaverLogo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        MainWindow.setWindowIcon(icon)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.SaveSlotBtn = QtWidgets.QPushButton(self.centralwidget, clicked= lambda: SaveSlot())
-        self.SaveSlotBtn.setGeometry(QtCore.QRect(20, 230, 141, 51))
-        self.SaveSlotBtn.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/ThemeSaver/config.env")
+FolderPath = os.path.expanduser(AppConfig['FolderPath'])
 
-"border-radius:10px;\n"
-"font: Bold 12pt \"Ubuntu\";\n"
-"color: rgb(247, 137, 20);\n"
-"")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/Save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.SaveSlotBtn.setIcon(icon)
-        self.SaveSlotBtn.setObjectName("SaveSlotBtn")
-        self.ImportSlotBtn = QtWidgets.QPushButton(self.centralwidget, clicked= lambda: ImportSlot())
-        self.ImportSlotBtn.setGeometry(QtCore.QRect(170, 230, 141, 51))
-        self.ImportSlotBtn.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+if not 'icon-pack' in AppConfig.keys():
+    AppConfig["icon-pack"] = 'OG'
+if not 'icon-color' in AppConfig.keys():
+    AppConfig["icon-color"] = '#ffffff'
 
-"border-radius:10px;\n"
-"font: Bold 12pt \"Ubuntu\";\n"
-"color: rgb(247, 137, 20);\n"
-"")
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/Import.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ImportSlotBtn.setIcon(icon1)
-        self.ImportSlotBtn.setObjectName("ImportSlotBtn")
-        self.LoadSlotBtn = QtWidgets.QPushButton(self.centralwidget, clicked= lambda: LoadSlot())
-        self.LoadSlotBtn.setGeometry(QtCore.QRect(20, 290, 141, 51))
-        self.LoadSlotBtn.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-
-"border-radius:10px;\n"
-"font: Bold 12pt \"Ubuntu\";\n"
-"color: rgb(247, 137, 20);\n"
-"")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/LoadSlot.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.LoadSlotBtn.setIcon(icon2)
-        self.LoadSlotBtn.setObjectName("LoadSlotBtn")
-        self.ThemeShopBtn = QtWidgets.QPushButton(self.centralwidget, clicked= lambda: Shop())
-        self.ThemeShopBtn.setGeometry(QtCore.QRect(170, 290, 141, 51))
-        self.ThemeShopBtn.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-
-"border-radius:10px;\n"
-"font: Bold 12pt \"Ubuntu\";\n"
-"color: rgb(247, 137, 20);\n"
-"")
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/ShoppingCart.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ThemeShopBtn.setIcon(icon3)
-        self.ThemeShopBtn.setObjectName("ThemeShopBtn")
-        self.BorderLabel = QtWidgets.QLabel(self.centralwidget)
-        self.BorderLabel.setGeometry(QtCore.QRect(0, 0, 331, 361))
-        self.BorderLabel.setStyleSheet("border-style: outset;\n"
-"border-width:5px;\n"
-"border-radius:10px;\n"
-"border-color:rgb(255, 255, 255);\n"
-"")
-        self.BorderLabel.setText("")
-        self.BorderLabel.setObjectName("BorderLabel")
-        self.ThemeSaverLogoLabel = QtWidgets.QLabel(self.centralwidget)
-        self.ThemeSaverLogoLabel.setGeometry(QtCore.QRect(90, 10, 131, 141))
-        self.ThemeSaverLogoLabel.setText("")
-        self.ThemeSaverLogoLabel.setPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/ThemeSaverLogo2.png"))
-        self.ThemeSaverLogoLabel.setObjectName("ThemeSaverLogoLabel")
-        self.ThemeTextLabel = QtWidgets.QLabel(self.centralwidget)
-        self.ThemeTextLabel.setGeometry(QtCore.QRect(10, 150, 161, 61))
-        self.ThemeTextLabel.setText("")
-        self.ThemeTextLabel.setPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/ThemeText.png"))
-        self.ThemeTextLabel.setObjectName("ThemeTextLabel")
-        self.SaverTextLabel = QtWidgets.QLabel(self.centralwidget)
-        self.SaverTextLabel.setGeometry(QtCore.QRect(170, 150, 141, 61))
-        self.SaverTextLabel.setText("")
-        self.SaverTextLabel.setPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/SaverText.png"))
-        self.SaverTextLabel.setObjectName("SaverTextLabel")
-        self.BorderLabel.raise_()
-        self.SaveSlotBtn.raise_()
-        self.ImportSlotBtn.raise_()
-        self.LoadSlotBtn.raise_()
-        self.ThemeShopBtn.raise_()
-        self.ThemeSaverLogoLabel.raise_()
-        self.ThemeTextLabel.raise_()
-        self.SaverTextLabel.raise_()
-        MainWindow.setCentralWidget(self.centralwidget)
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-        def SaveSlot():
-                os.system(f"python3 {FolderPath}/GUI/SaveSlotWindow.py &")
-        
-        def LoadSlot():
-                if len(os.listdir(f"{FolderPath}/Slots/")) == 0:
-                        NoSlots = QMessageBox() 
-                        NoSlots.setText("There Are No Saved Slots :(")
-                        run = NoSlots.exec_()
-                os.system(f"python3 {FolderPath}/GUI/LoadSlotWindow.py &")
-
-        def ImportSlot():
-                if "DESKTOP_SESSION" in os.environ:
-                        Desktop_Environment = os.environ["DESKTOP_SESSION"]
-                else:    
-                        Desktop_Environment = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '')    
-                SupportedDesktopWindowEnvironments = ['xfce']
-                if  Desktop_Environment.lower() in SupportedDesktopWindowEnvironments:
-                        ImportFile=QFileDialog.getOpenFileName(self, 'Open file', f'{FolderPath}', 'tar.gz archive (*.tar.gz)')
-                        os.system(f"python3 {FolderPath}/GUI/LoadingWindow.py '     Importing Slot...' &")
-                        print(ImportFile[0])
-                        os.system(f"themesaver import '{ImportFile[0]}'")
-                        os.system(f"pkill -f LoadingWindow.py")
-                        FinishedImporting = QMessageBox() 
-                        FinishedImporting.setText("Finsished Importing Slot")
-                        run = FinishedImporting.exec_()
-                else:
-                        NoLXDE = QMessageBox()
-                        NoLXDE.setText("Import Slot is not ready for your desktop environment yet :(")
-                        run = NoLXDE.exec_()
-
-        def Shop():
-                NotReady = QMessageBox()
-                NotReady.setText("Theme Shop isn't ready yet :(")
-                NotReady.exec_()
+from SaveSlotWindow import SaveSlotWindow
+from LoadSlotWindow import LoadSlotWindow
+from ImportSlotWindow import ImportSlotWindow
+# from test import LoadingAnimation
 
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.SaveSlotBtn.setText(_translate("MainWindow", "  Save Slot"))
-        self.ImportSlotBtn.setText(_translate("MainWindow", " Import Slot"))
-        self.LoadSlotBtn.setText(_translate("MainWindow", " Load Slots"))
-        self.ThemeShopBtn.setText(_translate("MainWindow", " Theme Shop"))
+try:
+
+    if AppConfig['icon-pack'] == 'Custom': 
+        if not os.path.isdir(f'{FolderPath}/GUI/Icons/Custom'):
+            os.mkdir(f'{FolderPath}/GUI/Icons/Custom')
+        icon_color = open(f'{FolderPath}/GUI/Icons/Custom/icon-color', 'r').read().strip()
+        if icon_color != AppConfig["icon-color"]:
+            for image in os.listdir(f'{FolderPath}/GUI/Icons/src'):
+                print('hi')
+                os.system(f'convert {FolderPath}/GUI/Icons/src/{image} -fill "{AppConfig["icon-color"]}" -colorize 100 {FolderPath}/GUI/Icons/Custom/{image}')
+            os.system(f'echo "{AppConfig["icon-color"]}" >  {FolderPath}/GUI/Icons/Custom/icon-color')
+except:
+    pass
 
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+if open(f'{FolderPath}/GUI/Icons/icon-pack', 'r').read().strip() != AppConfig['icon-pack']:
+    os.system(f'cp {FolderPath}/GUI/Icons/{AppConfig["icon-pack"]}/ThemeSaver.png ~/.local/share/icons')
+    os.system(f'echo "{AppConfig["icon-pack"]}" >  {FolderPath}/GUI/Icons/icon-pack')
+
+
+class MainWin(QMainWindow):
+    def __init__(self):
+        super(MainWin, self).__init__()
+        uic.loadUi(f'{FolderPath}/GUI/Design/MainWindow.ui', self)
+
+        self.setStyleSheet(f"background-color: {AppConfig['background-color']};")
+
+        def SetIcon(widget, iconName):
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/{iconName}.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            widget.setStyleSheet(f'''
+            color: {AppConfig['text-color']};
+            background-color: {AppConfig['button-background-color']};
+            border-radius: {AppConfig['button-border-radius']};
+            font: {AppConfig['text-style']}  {AppConfig['font-size']} {AppConfig['font-name']}
+            ''')
+            
+            widget.setIcon(icon)
+
+        self.SaveSlotBtn = self.findChild(QPushButton, 'SaveSlotBtn')
+        self.SaveSlotBtn.clicked.connect(self.SaveSlot)
+        SetIcon(self.SaveSlotBtn, 'Save')
+
+        self.LoadSlotBtn = self.findChild(QPushButton, 'LoadSlotBtn')
+        self.LoadSlotBtn.clicked.connect(self.LoadSlot)
+        SetIcon(self.LoadSlotBtn, 'LoadSlot')
+
+        self.ImportSlotBtn = self.findChild(QPushButton, 'ImportSlotBtn')
+        self.ImportSlotBtn.clicked.connect(self.ImportSlot)
+        SetIcon(self.ImportSlotBtn, 'Import')
+
+        self.ThemeShopBtn = self.findChild(QPushButton, 'ThemeShopBtn')
+        self.ThemeShopBtn.clicked.connect(self.ThemeShop)
+        SetIcon(self.ThemeShopBtn, 'ShoppingCart')
+
+        self.ThemeSaverLogo = self.findChild(QLabel, 'ThemeSaverLogo')
+        self.ThemeSaverLogo.setPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/ThemeSaverLogo.png"))
+        self.ThemeTextLabel = self.findChild(QLabel, 'ThemeTextLabel')
+        self.ThemeTextLabel.setPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/ThemeText.png"))
+        self.SaverTextLabel = self.findChild(QLabel, 'SaverTextLabel')
+        self.SaverTextLabel.setPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/SaverText.png"))
+
+        self.BorderLabel = self.findChild(QLabel, 'BorderLabel')
+        self.BorderLabel.setStyleSheet(f'''
+        border: 5px solid {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']};
+        ''')
+
+        self.show()
+
+    def SaveSlot(self):
+        self.SaveSlotWin = SaveSlotWindow(Main)
+        self.SaveSlotWin.show()
+
+    def LoadSlot(self):
+        if not os.path.isdir(f'{FolderPath}/Slots'):
+            os.mkdir(f'{FolderPath}/Slots')
+
+        if len(os.listdir(f'{FolderPath}/Slots')) == 0:
+            NoSlots = QMessageBox()
+            NoSlots.setText("There are no saved slots")
+            NoSlots.setIcon(QMessageBox.Critical)
+            run = NoSlots.exec_()
+            return None
+
+        self.LoadSlotWin = LoadSlotWindow()
+        self.LoadSlotWin.show()
+
+    def ImportSlot(self):
+        self.win = ImportSlotWindow()
+        self.win.show()
+
+    def ThemeShop(self):
+        webbrowser.open('https://themesaver.herokuapp.com/shop')
+
+
+app = QApplication(sys.argv)
+Main = MainWin()
+app.exec_()

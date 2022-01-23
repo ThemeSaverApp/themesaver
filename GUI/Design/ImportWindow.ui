@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SaveSlotWindow</class>
+ <widget class="QDialog" name="SaveSlotWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>70</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Import Slot</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Icons/Save.png</normaloff>Icons/Save.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>12</x>
+     <y>8</y>
+     <width>281</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <widget class="QPushButton" name="LocalBtn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1</x>
+      <y>6</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>131</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>131</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>  Local</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../Icons/OG/LoadSlot.png</normaloff>../Icons/OG/LoadSlot.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ShopBtn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>145</x>
+      <y>5</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>131</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>131</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>   Shop</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../Icons/OG/ShoppingCart.png</normaloff>../Icons/OG/ShoppingCart.png</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="BorderLabel">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>301</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 5px solid white;
+border-radius: 10px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>BorderLabel</zorder>
+  <zorder>centralwidget</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

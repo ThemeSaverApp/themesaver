@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoadSlotWindow</class>
+ <widget class="QDialog" name="LoadSlotWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>690</width>
+    <height>430</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1000</width>
+    <height>1000</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Load Slot</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Icons/LoadSlot.png</normaloff>Icons/LoadSlot.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>711</width>
+     <height>431</height>
+    </rect>
+   </property>
+   <widget class="QLabel" name="Screenshot">
+    <property name="geometry">
+     <rect>
+      <x>107</x>
+      <y>80</y>
+      <width>481</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 10px;
+border: 5px solid white;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BackBtn">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>190</y>
+      <width>61</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(247, 137, 20);
+border: 0px solid;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../Icons/BackArrow.png</normaloff>../Icons/BackArrow.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>50</width>
+      <height>50</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ForwardBtn">
+    <property name="geometry">
+     <rect>
+      <x>606</x>
+      <y>190</y>
+      <width>61</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(247, 137, 20);
+border: 0px solid;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../Icons/ForwardArrow.png</normaloff>../Icons/ForwardArrow.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>50</width>
+      <height>50</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="LoadSlotBtn">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>370</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>  Load Slot</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>Icons/LoadSlot.png</normaloff>Icons/LoadSlot.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DeleteSlotBtn">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>370</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string> Delete Slot</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>Icons/Delete.png</normaloff>Icons/Delete.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ExportSlotBtn">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>370</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string> Export Slot</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>Icons/Export.png</normaloff>Icons/Export.png</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="SlotName">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>20</y>
+      <width>400</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>Slot Name</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="BorderLabel">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>691</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 5px solid white;
+border-radius: 10px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <zorder>BorderLabel</zorder>
+   <zorder>BackBtn</zorder>
+   <zorder>Screenshot</zorder>
+   <zorder>ForwardBtn</zorder>
+   <zorder>LoadSlotBtn</zorder>
+   <zorder>DeleteSlotBtn</zorder>
+   <zorder>ExportSlotBtn</zorder>
+   <zorder>SlotName</zorder>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

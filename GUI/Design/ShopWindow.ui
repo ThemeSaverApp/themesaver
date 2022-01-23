@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RepoWindow</class>
+ <widget class="QDialog" name="RepoWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>348</width>
+    <height>182</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Import Slot - Shop</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Icons/Save.png</normaloff>Icons/Save.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>6</x>
+     <y>10</y>
+     <width>331</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <widget class="QLabel" name="RepoLabel">
+    <property name="geometry">
+     <rect>
+      <x>63</x>
+      <y>5</y>
+      <width>211</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>Enter Repo Link: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="RepoLink">
+    <property name="geometry">
+     <rect>
+      <x>8</x>
+      <y>57</y>
+      <width>311</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;
+border : 2px solid white;
+border-top: 6px solid white;
+border-style: solid;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DownloadBtn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>96</x>
+      <y>110</y>
+      <width>150</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>150</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>150</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>  Download Slot</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>VM/ThemeSaver/GUI/Icons/Save.png</normaloff>VM/ThemeSaver/GUI/Icons/Save.png</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="BorderLabel">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>351</width>
+     <height>181</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 5px solid white;
+border-radius: 10px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>BorderLabel</zorder>
+  <zorder>centralwidget</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

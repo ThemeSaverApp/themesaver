@@ -1,92 +1,94 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QWidget
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import (QApplication, QWidget, QDialog, QTextEdit, QPushButton, QLabel, QVBoxLayout, QMessageBox, QMainWindow)
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QDir
 import os
+import sys
+import time
+from dotenv import load_dotenv, dotenv_values
 
-class Ui_MainWindow(QWidget):
-    def setupUi(self, MainWindow):
-        FolderPath = f"{os.environ['HOME']}/.themesaver"
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(264, 177)
-        MainWindow.setMaximumSize(QtCore.QSize(264, 177))
-        MainWindow.setStyleSheet("background-color: rgb(247, 137, 20);")
+     
+AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/ThemeSaver/config.env")
+FolderPath = os.path.expanduser(AppConfig['FolderPath'])
+
+
+class SaveSlotWindow(QDialog):
+    def __init__(self, MainWin):
+        super(SaveSlotWindow, self).__init__()
+
+
+        self.MainWin = MainWin
+
+        uic.loadUi(f'{FolderPath}/GUI/Design/SaveSlotWindow.ui', self)
+
+        self.setStyleSheet(f"background-color: {AppConfig['background-color']};\n")
+
+        self.SaveSlotBtn = self.findChild(QPushButton, 'SaveSlotBtn')
+        self.SaveSlotBtn.clicked.connect(self.SaveSlot)
+        self.SaveSlotBtn.setStyleSheet(f'''
+        color: {AppConfig['text-color']};
+        background-color: {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']};   
+        font: {AppConfig['text-style']} {AppConfig['font-size']} {AppConfig['font-name']};     
+        ''')
+
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/ThemeSaverLogo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        MainWindow.setWindowIcon(icon)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.SlotNameInput = QtWidgets.QLineEdit(self.centralwidget)
-        self.SlotNameInput.setGeometry(QtCore.QRect(20, 60, 221, 51))
-        self.SlotNameInput.setStyleSheet("font: 15pt \"Ubuntu\";\n"
-"color: rgb(247, 137, 20);\n"
-"border-style : dashed;\n"
-"border : 4px solid white;\n"
-"border-radius: 10px;\n"
-"background-color: rgb(255, 255, 255);")
-        self.SlotNameInput.setInputMask("")
-        self.SlotNameInput.setText("")
-        self.SlotNameInput.setObjectName("SlotNameInput")
-        self.EnterSlotNameLabel = QtWidgets.QLabel(self.centralwidget)
-        self.EnterSlotNameLabel.setGeometry(QtCore.QRect(40, 10, 181, 41))
-        self.EnterSlotNameLabel.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-radius:10px;\n"
-"font: Bold 15pt \"Ubuntu\";\n"
-"color: rgb(247, 137, 20);\n"
-"")
-        self.EnterSlotNameLabel.setObjectName("EnterSlotNameLabel")
-        self.ConfirmBtn = QtWidgets.QPushButton(self.centralwidget, clicked= lambda: SaveSlot())
-        self.ConfirmBtn.setGeometry(QtCore.QRect(70, 120, 121, 41))
-        self.ConfirmBtn.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"font: 12 10pt \"Source Code Pro\";\n"
-"border-radius:10px;\n"
-"font: Bold 12pt \"Ubuntu\";\n"
-"color: rgb(247, 137, 20);\n"
-"")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/Confirm.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ConfirmBtn.setIcon(icon)
-        self.ConfirmBtn.setIconSize(QtCore.QSize(21, 21))
-        self.ConfirmBtn.setFlat(False)
-        self.ConfirmBtn.setObjectName("ConfirmBtn")
-        MainWindow.setCentralWidget(self.centralwidget)
+        icon.addPixmap(QtGui.QPixmap(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/Save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.SaveSlotBtn.setIcon(icon)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.SlotNameInput = self.findChild(QTextEdit, 'SlotName')
+        self.SlotNameInput.setStyleSheet(f'''
+        color: {AppConfig['text-color']};
+        background-color: {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']};   
+        font: {AppConfig['font-size']} {AppConfig['font-name']};     
+        border : 4px solid {AppConfig['button-background-color']};
+        border : 2px solid {AppConfig['button-background-color']};
+        border-top: 6px solid {AppConfig['button-background-color']};
+        border-style: solid;
+        ''')
 
-        def SaveSlot():
-                SlotName = self.SlotNameInput.text()
-                if SlotName.strip() == "":
-                        EmptyName = QMessageBox()
-                        EmptyName.setText('Enter Valid Slot Name')
-                        run = EmptyName.exec_()
-                else:
-                        if os.path.isdir(f"{FolderPath}/Slots/{SlotName}"):
-                                Overwrite = QMessageBox.question(self, 'Overwrite ?', 'A slot with that name already exists, Do you want to overwrite it ?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                                if Overwrite == QMessageBox.Yes:  
-                                        os.system(f"rm -r ~/.themesaver/Slots/'{SlotName}'")
-                                        os.system(f"themesaver save '{SlotName}'")     
-                                        
-                        else:
-                                os.system(f"themesaver save '{SlotName}'")
-                
-                FinishedSaving = QMessageBox()
-                FinishedSaving.setText("Finished Saving Theme")
-                run = FinishedSaving.exec_()
-                exit()
+        self.SlotNameLabel = self.findChild(QLabel, 'SlotNameLabel')
+        self.SlotNameLabel.setStyleSheet(f'''
+        color: {AppConfig['text-color']};
+        background-color: {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']};   
+        font: {AppConfig['text-style']} {AppConfig['font-size']} {AppConfig['font-name']};     
+        ''')
+
+        self.BorderLabel = self.findChild(QLabel, 'BorderLabel')
+        self.BorderLabel.setStyleSheet(f'''
+        border: 5px solid {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']};
+        ''')
 
 
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "SaveSlot"))
-        self.EnterSlotNameLabel.setText(_translate("MainWindow", "  Enter Slot Name:  "))
-        self.ConfirmBtn.setText(_translate("MainWindow", " Confirm"))
+    def SaveSlot(self):
+        SlotName = self.SlotNameInput.toPlainText()
+        if SlotName.strip() == "":
+            EmptyName = QMessageBox()
+            EmptyName.setText('Enter Valid Slot Name')
+            run = EmptyName.exec_()
+            return None
+        elif os.path.isdir(f"{FolderPath}/Slots/{SlotName}"):
+            Overwrite = QMessageBox.question(self, 'Overwrite ?', 'A slot with that name already exists, Do you want to overwrite it ?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if Overwrite == QMessageBox.Yes:  
+                os.system(f"rm -r {FolderPath}/Slots/'{SlotName}'")
+            else:
+                return None
+        
+        self.MainWin.hide()
+        self.hide()
+        os.system(f'themesaver save {SlotName}')
+        self.MainWin.show()
+        self.show()
 
+        FinishedSaving = QMessageBox()
+        FinishedSaving.setText("Finished Saving Theme")
+        run = FinishedSaving.exec_()
+        self.hide()
+            
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+  
+        

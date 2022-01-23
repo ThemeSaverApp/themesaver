@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SaveSlotWindow</class>
+ <widget class="QDialog" name="SaveSlotWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>280</width>
+    <height>190</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Save Slot</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Icons/Save.png</normaloff>Icons/Save.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>241</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <widget class="QLabel" name="SlotNameLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>10</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>Enter Slot Name: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="SlotName">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>62</y>
+      <width>221</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;
+border : 2px solid white;
+border-top: 6px solid white;
+border-style: solid;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="SaveSlotBtn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>116</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>131</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>131</width>
+      <height>41</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: Bold 12pt &quot;Ubuntu&quot;;
+color: rgb(247, 137, 20);
+border-radius:10px;</string>
+    </property>
+    <property name="text">
+     <string>  Save Slot</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>VM/ThemeSaver/GUI/Icons/Save.png</normaloff>VM/ThemeSaver/GUI/Icons/Save.png</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="BorderLabel">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>281</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 5px solid white;
+border-radius: 10px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>BorderLabel</zorder>
+  <zorder>centralwidget</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

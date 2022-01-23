@@ -1,58 +1,54 @@
-import sys
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import (QApplication, QWidget, QDialog ,QFileDialog, QTextEdit, QPushButton, QLabel, QVBoxLayout, QMessageBox, QMainWindow)
+from PyQt5.QtGui import QPixmap, QPalette, QMovie
+from PyQt5.QtCore import QDir
 import os
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtGui import QMovie
-from PyQt5.QtCore import Qt
+import subprocess
+import sys
+import time
+import webbrowser
+from dotenv import load_dotenv, dotenv_values
+import tarfile
+from pathlib import Path
 
 
-class Ui_MainWindow(QMainWindow):
-    def setupUi(self, MainWindow):
-        FolderPath = f"{os.environ['HOME']}/.themesaver"
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(331, 81)
-        MainWindow.setMaximumSize(331, 81)
-        MainWindow.setStyleSheet("background-color: rgb(247, 137, 20);")
-        self.setWindowFlag(Qt.FramelessWindowHint)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(10, 10, 60, 60))
-        self.label.setText("")
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(80, 20, 241, 41))
-        self.label_2.setStyleSheet("color: rgb(247, 137, 20);\n"
-"background-color: rgb(255, 255, 255);\n"
-"border-radius:10px;\n"
-"font: Bold 15pt \"Ubuntu\";\n"
-"")
-        self.label_2.setObjectName("label_2")
-        MainWindow.setCentralWidget(self.centralwidget)
+AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/ThemeSaver/config.env")
+FolderPath = os.path.expanduser(AppConfig['FolderPath'])
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+class MainWin(QMainWindow):
+    def __init__(self):
+        super(MainWin, self).__init__()
+        uic.loadUi(f'{FolderPath}/GUI/Design/LoadingWindow.ui', self)
 
-        self.movie = QMovie(f"{FolderPath}/GUI/Icons/Loading.gif")
-        self.label.setMovie(self.movie)
+        self.setStyleSheet(f"background-color: {AppConfig['background-color']};\n")
 
-        self.startAnimation()
-  
-    def startAnimation(self):
+        self.movie = QMovie(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/{sys.argv[2]}.gif")
+
+        self.gif.setStyleSheet(f'''
+        background-color: {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']}; 
+        border: 2px solid {AppConfig['button-background-color']};
+        ''')
+
+        self.Message.setText(sys.argv[1])
+        self.Message.setStyleSheet(f'''
+        color: {AppConfig['text-color']};
+        background-color: {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']};   
+        font: {AppConfig['text-style']} {AppConfig['font-size']} {AppConfig['font-name']};
+        ''')
+
+        self.BorderLabel.setStyleSheet(f'''
+        border: 5px solid {AppConfig['button-background-color']};
+        border-radius: {AppConfig['button-border-radius']};
+        ''')
+        self.gif.setMovie(self.movie)
+
         self.movie.start()
-  
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Loading"))
-        self.label_2.setText(_translate("MainWindow", f"{sys.argv[1]}"))
+        self.show()
+     
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+app = QApplication(sys.argv)
+Main = MainWin()
+app.exec_()
