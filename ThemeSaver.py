@@ -276,7 +276,7 @@ def load(slotname, gui):
     if DE == 'lxde' or DE == 'lxde-pi':
         for config in RequiredFoldersLXDE:
             os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
-            os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{folder} ~/.config')
+            os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{config} ~/.config')
 
         # Refreshing Desktop
         subprocess.Popen(['killall', 'openbox-lxde-pi', 'openbox', 'pcmanfm',
