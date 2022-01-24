@@ -75,7 +75,10 @@ class LoadSlotWindow(QDialog):
         self.SlotNames = []
 
         for slotname in os.listdir(f"{FolderPath}/Slots/"):
-            if json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))['desktopEnvironment'] == os.environ['DESKTOP_SESSION'] and json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))['windowManager'] == os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower():
+            DE = os.environ['DESKTOP_SESSION'].lower()
+            WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
+            jsonFile = json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))
+            if jsonFile['desktopEnvironment'] == DE and jsonFile['windowManager'] == WM:
                 self.SlotNames.append(slotname)
 
 
@@ -111,9 +114,15 @@ class LoadSlotWindow(QDialog):
 
             # Staring from begginning after deleting 1 slot
             self.SlotNames = []
+
             for slotname in os.listdir(f"{FolderPath}/Slots/"):
-                if json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))['desktopEnvironment'] == os.environ['DESKTOP_SESSION'] and json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))['windowManager'] == os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower():
+                DE = os.environ['DESKTOP_SESSION'].lower()
+                WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
+                jsonFile = json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))
+                if jsonFile['desktopEnvironment'] == DE and jsonFile['windowManager'] == WM:
                     self.SlotNames.append(slotname)
+
+
 
             if len(self.SlotNames) == 0:
                 NoSlots = QMessageBox()

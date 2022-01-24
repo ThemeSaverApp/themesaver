@@ -25,7 +25,7 @@ if not DE.lower() in SupportedDE_WM and WM.lower() in SupportedDE_WM:
 if package_manager == 'pacman':
     os.system("sudo pacman -S xdotool ttf-ubuntu-font-family imagemagick scrot --noconfirm --noprogressbar --needed")
 elif package_manager == 'apt':    
-    os.system("sudo apt update && sudo apt -y install xdotool fonts-ubuntu imagemagick scrot")
+    os.system("sudo apt update && sudo apt -y install xdotool fonts-ubuntu imagemagick scrot python3-pyqt5")
 
 # Cloning Repo
 if not os.path.isdir(f"{os.environ['HOME']}/.themesaver/"):
@@ -38,7 +38,8 @@ if DE == 'xfce':
         os.system('sudo dpkg -i ~/.themesaver/xfce4-panel-profiles.deb && sudo apt -y install -f')
 
 # Creating Desktop Entry
-os.system('sudo cp ~/.themesaver/GUI/Icons/OG/ThemeSaverLogo.png ~/.local/share/icons/ThemeSaver.png')
+os.system('mkdir ~/.local/share/icons')
+os.system('sudo cp ~/.themesaver/GUI/Icons/OG/ThemeSaver.png ~/.local/share/icons')
 os.system("mkdir ~/.local/share/applications")
 os.system('touch ~/.local/share/applications/ThemeSaver.desktop')
 with open(f"{os.environ['HOME']}/.local/share/applications/ThemeSaver.desktop", "w") as DesktopFile:
@@ -57,5 +58,4 @@ os.system('mkdir ~/.config/ThemeSaver')
 os.system('cp ~/.themesaver/config.env ~/.config/ThemeSaver/')
 
 # Installing themesaver bin file
-os.system('cd ~/.themesaver')
-os.system('pip install --editable .')
+os.system('cd ~/.themesaver && pip install --editable .')

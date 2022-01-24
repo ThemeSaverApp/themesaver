@@ -125,7 +125,7 @@ def save(slotname):
             os.system(f'rm {SlotsFolder}/{channel.strip()}')
         os.system(f'xfce4-panel-profiles save {SlotsFolder}/"{slotname}"/"{slotname}"')
 
-    if DE == 'lxde':
+    if DE == 'lxde' or DE == 'lxde-pi':
         for folder in RequiredFoldersLXDE:
             os.system(
                 f'cp -rf ~/.config/{folder} {SlotsFolder}/"{slotname}"/configs &>/dev/null')
@@ -268,11 +268,10 @@ def load(slotname, gui):
                          stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         os.system('clear')
 
-    if DE == 'lxde':
-        for folder in RequiredFoldersLXDE:
-            os.system(f'sudo rm -rf ~/.config/{folder}')
-            os.system(
-                f'cp -rf {SlotsFolder}/"{slotname}"/{folder} ~/.config')
+    if DE == 'lxde' or DE == 'lxde-pi':
+        for config in RequiredFoldersLXDE:
+            os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
+            os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{folder} ~/.config')
 
         # Refreshing Desktop
         subprocess.Popen(['killall', 'openbox-lxde-pi', 'openbox', 'pcmanfm',
