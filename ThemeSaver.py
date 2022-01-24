@@ -142,6 +142,12 @@ def save(slotname):
         WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '')
         print(WallpaperPath)
 
+    if DE == 'lxde-pi':
+        if os.path.isfile(Path(f'~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf').expanduser()):
+            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' ~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf")        
+        else:
+            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' /etc/xd/pcmanfm/LXDE-pi/desktop-items-0.conf")        
+        
     if DE == 'plasma' and WM == 'kwin':
         WallpaperPath = os.popen(f"sed -n '/Image=file:/p' ~/.config/plasma-org.kde.plasma.desktop-appletsrc")
 
@@ -153,8 +159,7 @@ def save(slotname):
 
     if WallpaperPath.startswith(os.environ['HOME']):
         WallpaperPath = WallpaperPath.replace(os.environ['HOME'], '~')
-
-    print((f'cp {WallpaperPath} {SlotsFolder}/"{slotname}"/Wallpaper'))
+        
     os.system(f'cp {WallpaperPath} {SlotsFolder}/"{slotname}"/Wallpaper')        
 
     Theme = os.popen('gsettings get org.gnome.desktop.interface gtk-theme').read().strip().strip("'")
@@ -249,7 +254,7 @@ def load(slotname, gui):
     if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/qtile'):
         os.system('qtile cmd-obj -o cmd -f restart')
 
-    if DE != 'plasma' and DE != 'xfce':
+    if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/nitrogen'):
         os.system(f'nitrogen --save {AppConfig["NitrogenStyle"]} {SlotsFolder}/"{slotname}"/Wallpaper &>/dev/null')
 
     if DE == 'xfce':
