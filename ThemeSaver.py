@@ -146,7 +146,7 @@ def save(slotname):
         if os.path.isfile(Path(f'~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf').expanduser()):
             WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' ~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')    
         else:
-            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' /etc/xd/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')     
+            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' /etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')     
         
     if DE == 'plasma' and WM == 'kwin':
         WallpaperPath = os.popen(f"sed -n '/Image=file:/p' ~/.config/plasma-org.kde.plasma.desktop-appletsrc")
