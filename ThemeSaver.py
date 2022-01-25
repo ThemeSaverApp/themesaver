@@ -64,7 +64,7 @@ def save(slotname):
     PlankRunning = os.popen('pgrep plank').read()
     if PlankRunning != '':
         # Storing Plank Configuration
-        os.mkdir(Path(SlotsFolder / slotname / 'plank'))(f'mkdir {SlotsFolder}/"{slotname}"/plank')
+        os.mkdir(Path(SlotsFolder / slotname / 'plank'))
         for PlankProperty in PlankProperties:
             os.system(
                 f'gsettings get net.launchpad.plank.dock.settings:/net/launchpad/plank/docks/dock1/ {PlankProperty} > {SlotsFolder}/"{slotname}"/plank/{PlankProperty}')
@@ -283,13 +283,14 @@ def load(slotname, gui):
         
         subprocess.Popen(['killall', 'pcmanfm', 'lxpanel'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
-        subprocess.Popen(['nohup', 'mutter', '--replace'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        time.sleep(2)
         subprocess.Popen(['nohup', 'lxsession', '--session=LXDE-pi','--reload'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)                
         subprocess.Popen(['nohup', 'lxpanel', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
         subprocess.Popen(['nohup', 'pcmanfm', '--desktop', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)
+        subprocess.Popen(['nohup', 'mutter', '--replace'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
         
   
     if DE == 'plasma' and WM =='kwin':
