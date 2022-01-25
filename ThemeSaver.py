@@ -125,7 +125,7 @@ def save(slotname):
             os.system(f'rm {SlotsFolder}/{channel.strip()}')
         os.system(f'xfce4-panel-profiles save {SlotsFolder}/"{slotname}"/"{slotname}"')
 
-    if DE == 'lxde' or DE == 'lxde-pi':
+    if  DE == 'lxde-pi':
         for folder in RequiredFoldersLXDE:
             os.system(
                 f'cp -rf ~/.config/{folder} {SlotsFolder}/"{slotname}"/configs &>/dev/null')
@@ -273,25 +273,25 @@ def load(slotname, gui):
                          stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         os.system('clear')
 
-    if DE == 'lxde' or DE == 'lxde-pi':
+    if DE == 'lxde-pi':
         for config in RequiredFoldersLXDE:
             os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
             os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{config} ~/.config')
 
-        # Refreshing Desktop
-        subprocess.Popen(['killall', 'openbox-lxde-pi', 'openbox', 'pcmanfm',
-                         'lxpanel'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        time.sleep(2)
-        subprocess.Popen(['setsid', 'openbox-lxde-pi'],
-                         stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        time.sleep(2)
-        subprocess.Popen(['nohup', 'lxpanel', '--profile', 'LXDE-pi'],
-                         stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        time.sleep(2)
-        subprocess.Popen(['nohup', 'pcmanfm', '--desktop', '--profile',
-                         'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-    
+        # Refreshing Desktop
+        
+        subprocess.Popen(['killall', 'pcmanfm', 'lxpanel'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)
+        subprocess.Popen(['nohup', 'mutter', '--replace'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)
+        subprocess.Popen(['nohup', 'lxsession', '--session=LXDE-pi','--reload'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)                
+        subprocess.Popen(['nohup', 'lxpanel', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)
+        subprocess.Popen(['nohup', 'pcmanfm', '--desktop', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        
+  
     if DE == 'plasma' and WM =='kwin':
         # Kde cursors not setting automatically so setting manually
         if os.path.isfile(f'{SlotsFolder}/{slotname}/cursorTheme'):
@@ -372,8 +372,8 @@ def export(slotname, filepath):
     checkUsrLocal(f'icons/', info['cursorTheme'], f'{filepath}/"{slotname}"/cursors/')
 
     # Exporting Wallpaper
-    if os.path.isfile(f'{SlotsFolder}/{slotname}/wallpaperPath'):
-        Wallpaper = Path(SlotsFolder / slotname / 'wallpaperPath').read_text().replace('\'', '').strip()
+    if os.path.isfile(f'{SlotsFolder}/{slotname}/Wallpaper'):
+        Wallpaper = Path(SlotsFolder / slotname / 'Wallpaper')
         os.mkdir(Path(filepath / slotname / 'wallpaper'))
         os.system(f"cp -r {Wallpaper} {Path(filepath / slotname / 'wallpaper')}")
 
