@@ -59,3 +59,14 @@ os.system('cp ~/.themesaver/config.env ~/.config/ThemeSaver/')
 
 # Installing themesaver bin file
 os.system('cd ~/.themesaver && pip install --editable .')
+
+
+for path in os.environ['PATH'].split(':'):
+    if path.endswith('/.local/bin'):
+        quit()
+
+shell = os.environ['SHELL'].strip().replace('/', '').replace('usr', '').replace('bin', '')
+if shell == 'bash':
+    os.system("echo 'export PATH=~/.local/bin/:$PATH' >> ~/.bashrc")
+    
+    
