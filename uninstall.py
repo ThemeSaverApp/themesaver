@@ -2,9 +2,10 @@ import os
 
 CleanUpCommands = [
 'rm ~/.local/share/applications/ThemeSaver.desktop',
-'sudo rm -r ~/.themesaver',
-'sudo rm /usr/share/icons/ThemeSaver.png',
-'sudo rm /usr/local/bin/themesaver',
+'rm ~/.local/share/icons/ThemeSaver.png',
+'pip3 uninstall -y themesaver',
+'rm ~/.local/bin/themesaver',
+ 'sudo rm -r ~/.themesaver',
 ]
 
 for command in CleanUpCommands:
