@@ -198,7 +198,7 @@ def load(slotname, gui):
 
     # Loading Plank configs if they exist
     if Path(SlotsFolder / slotname / 'plank').exists():
-        subprocess.Popen(['nohup', 'plank'],
+        subprocess.Popen(['setsid', 'plank'],
                          stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         for PlankConfig in os.listdir(f'{SlotsFolder}/{slotname}/plank'):
             PlankConfigFile = open(
@@ -275,21 +275,21 @@ def load(slotname, gui):
 
     if DE == 'lxde-pi':
         for config in RequiredFoldersLXDE:
-            os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
+            if not Path(f'~/.config_backups/{backupFolder}/{config}').expanduser().exists():
+                os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
             os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{config} ~/.config')
 
 
         # Refreshing Desktop
-        
         subprocess.Popen(['killall', 'pcmanfm', 'lxpanel'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
-        subprocess.Popen(['nohup', 'lxsession', '--session=LXDE-pi','--reload'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.Popen(['setsid', 'lxsession', '--session=LXDE-pi','--reload'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)                
-        subprocess.Popen(['nohup', 'lxpanel', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.Popen(['setsid', 'lxpanel', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
-        subprocess.Popen(['nohup', 'pcmanfm', '--desktop', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.Popen(['setsid', 'pcmanfm', '--desktop', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
-        subprocess.Popen(['nohup', 'mutter', '--replace'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.Popen(['setsid', 'mutter', '--replace'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
         
   
