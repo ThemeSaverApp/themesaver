@@ -39,7 +39,7 @@ if DE == 'xfce':
 
 # Creating Desktop Entry
 os.system('mkdir ~/.local/share/icons')
-os.system('sudo cp ~/.themesaver/GUI/Icons/OG/ThemeSaver.png ~/.local/share/icons')
+os.system('cp ~/.themesaver/GUI/Icons/OG/ThemeSaver.png ~/.local/share/icons')
 os.system("mkdir ~/.local/share/applications")
 os.system('touch ~/.local/share/applications/ThemeSaver.desktop')
 with open(f"{os.environ['HOME']}/.local/share/applications/ThemeSaver.desktop", "w") as DesktopFile:
