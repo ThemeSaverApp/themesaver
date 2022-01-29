@@ -101,6 +101,7 @@ def save(slotname):
                 f'cp -rf {file} {SlotsFolder}/"{slotname}"/{shell}')
 
     for config in Configs:
+        click.echo(click.style(f'Saving config: ', fg='green') + click.style(f'{config}', fg='blue'))
         os.system(f'cp -rf ~/.config/{config} {SlotsFolder}/"{slotname}"/configs &>/dev/null')
 
 
@@ -111,6 +112,13 @@ def save(slotname):
 
         for file in RequiredKDELocal:
             os.system(f'cp -rf ~/.local/share/{file} {SlotsFolder}/"{slotname}"/share &>/dev/null')
+
+        WallpaperPath = os.popen(f"sed -n '/Image=/p' ~/.config/plasma-org.kde.plasma.desktop-appletsrc").read().strip()
+        os.system(f'sed -i "s#{WallpaperPath.strip()}#Image=#g" {SlotsFolder}/"{slotname}"/configs/plasma-org.kde.plasma.desktop-appletsrc')
+
+        WallpaperPath = WallpaperPath.replace('Image=', '').replace('file://', '').strip()
+        if os.path.isdir(WallpaperPath):
+            WallpaperPath = f"{WallpaperPath}contents/images/{os.listdir(f'{WallpaperPath}contents/images/')[0]}"
 
 
     if DE == 'xfce' and WM == 'xfwm4':
@@ -125,49 +133,37 @@ def save(slotname):
             os.system(f'rm {SlotsFolder}/{channel.strip()}')
         os.system(f'xfce4-panel-profiles save {SlotsFolder}/"{slotname}"/"{slotname}"')
 
+        if DE == 'xfce' and WM == 'xfwm4':
+            for path in os.listdir(f'{SlotsFolder}/{slotname}/xfce4-desktop'):
+                if path.endswith('last-image'):
+                    WallpaperPath = open(f'{SlotsFolder}/{slotname}/xfce4-desktop/{path}').read().strip()
+                    break
+
+
     if  DE == 'lxde-pi':
         for folder in RequiredFoldersLXDE:
-            os.system(
-                f'cp -rf ~/.config/{folder} {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+            os.system(f'cp -rf ~/.config/{folder} {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+
+        if os.path.isfile(Path(f'~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf').expanduser()):
+            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' ~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')    
+        else:
+            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' /etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')     
+                    
 
     if WM == 'awesome':
         os.system(f'cp -rf ~/.config/awesome {SlotsFolder}/"{slotname}"/configs &>/dev/null')
 
     if WM == 'qtile':
         os.system(f'cp -rf ~/.config/qtile {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+        WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '') 
 
-
-    
-    if os.path.isdir(Path(f'~/.config/nitrogen').expanduser()):
-        WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '')
-        print(WallpaperPath)
-
-    if DE == 'lxde-pi':
-        if os.path.isfile(Path(f'~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf').expanduser()):
-            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' ~/.config/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')    
-        else:
-            WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' /etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')     
-        
-    if DE == 'plasma' and WM == 'kwin':
-        WallpaperPath = os.popen(f"sed -n '/Image=file:/p' ~/.config/plasma-org.kde.plasma.desktop-appletsrc")
-
-    if DE == 'xfce' and WM == 'xfwm4':
-        for path in os.listdir(f'{SlotsFolder}/{slotname}/xfce4-desktop'):
-            if path.endswith('last-image'):
-                WallpaperPath = open(f'{SlotsFolder}/{slotname}/xfce4-desktop/{path}').read().strip()
-                break
-
-    if WallpaperPath.startswith(os.environ['HOME']):
-        WallpaperPath = WallpaperPath.replace(os.environ['HOME'], '~')
-        
-    os.system(f'cp {WallpaperPath} {SlotsFolder}/"{slotname}"/Wallpaper')        
+    os.system(f'cp "{WallpaperPath}" {SlotsFolder}/"{slotname}"/Wallpaper.png')
 
     Theme = os.popen('gsettings get org.gnome.desktop.interface gtk-theme').read().strip().strip("'")
     IconTheme = os.popen('gsettings get org.gnome.desktop.interface icon-theme').read().strip().strip("'")
     CursorTheme  = os.popen('gsettings get org.gnome.desktop.interface cursor-theme').read().strip().strip("'")
 
     info = {
-        
         "name": slotname,
         "gtkTheme": Theme,
         "iconTheme": IconTheme,
@@ -176,10 +172,17 @@ def save(slotname):
         "desktopEnvironment": DE.strip(),
         "windowManager": WM.strip()
     }
+
   
     # Serializing json 
     jsonPath = Path(SlotsFolder / slotname / 'info.json')
     jsonPath.write_text(json.dumps(info , indent = 4))
+
+    print()
+    click.echo(click.style('======= Slot Info =======', fg='green'))
+
+    for info,value in info.items():
+        click.echo(click.style(f'{info}: ', fg='green') + click.style(f'{value}', fg='blue'))
 
 
 @click.command(help='Load existing slot')
@@ -192,6 +195,7 @@ def load(slotname, gui):
         quit()
 
     info = json.load(open(f'{SlotsFolder}/{slotname}/info.json'))
+    print(info)
     if info['desktopEnvironment'] != DE and info['windowManager'] != WM:
         click.echo(click.style(f'The is slot was made for the {desktopEnvironment} Desktop Environment and the {windowManager} window manager', fg='red'))
         quit()
@@ -210,34 +214,14 @@ def load(slotname, gui):
     else:
         subprocess.Popen(['killall', 'plank'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-
     if not Path('~/.config_backups').expanduser().exists():
         os.system(f'mkdir ~/.config_backups')
     backupFolder = f'Backup - {str(time.strftime("%a, %H:%M:%S", time.localtime()))}'
     os.system(f'mkdir ~/.config_backups/"{backupFolder}"')
 
-
-    if DE == 'plasma' and WM =='kwin':
-        for config in RequiredKDEConfig:
-            os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
-            # os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{config} ~/.config')
-
-        os.system(f'mkdir ~/.config_backups/"{backupFolder}"/share')
-        for file in RequiredKDELocal:
-            os.system(f'mv ~/.local/share/{file} ~/.config_backups/"{backupFolder}"/share')
-            # os.system(f'cp -rf {SlotsFolder}/"{slotname}"/share/{file} ~/.local/share/')
-
-    for config in os.listdir(f'{SlotsFolder}/{slotname}/configs/'):
-        os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
-        os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{config} ~/.config')
-    
-    os.system(f'cp -rf {SlotsFolder}/"{slotname}"/share/* ~/.local/share/ &>/dev/null')
-
     # Using subprocesss to run apps as os.system is not working properly with &>/dev/null
-
     def runApp(app, config):
         if Path(f'{SlotsFolder}/{slotname}/configs/{config}').exists():
-            print(app)
             subprocess.Popen(['killall', app], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             time.sleep(2)
             subprocess.Popen(['setsid', app], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
@@ -267,13 +251,12 @@ def load(slotname, gui):
                 os.popen(
                     f'xfconf-query -c "{PropertyFolders.strip()}" -p "{PropertyFilePath}" -s "{PropertyFileValue.strip()}" ')
 
-        os.system(
-            f'xfce4-panel-profiles load {SlotsFolder}/"{slotname}"/"{slotname}"')
-        subprocess.Popen(['setsid', 'xfce4-panel', '&>/dev/null'],
-                         stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        os.system('clear')
+        os.system(f'xfce4-panel-profiles load {SlotsFolder}/"{slotname}"/"{slotname}"')
+        subprocess.Popen(['setsid', 'xfce4-panel', '&>/dev/null'],stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
     if DE == 'lxde-pi':
+        click.echo(click.style('=========[ RESTORING LXDE CONFIGS ]=========', fg='green'))
+        os.system(f'mkdir ~/.config_backups/"{backupFolder}"/share')        
         for config in RequiredFoldersLXDE:
             if not Path(f'~/.config_backups/{backupFolder}/{config}').expanduser().exists():
                 os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}"')
@@ -281,30 +264,62 @@ def load(slotname, gui):
 
 
         # Refreshing Desktop
+        print()
+        click.echo(click.style('=========[ REFRESHING DESKTOP ]=========', fg='green'))        
         subprocess.Popen(['killall', 'pcmanfm', 'lxpanel'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
+        click.echo(click.style(f'Refreshing Lxsession', fg='green'))
         subprocess.Popen(['setsid', 'lxsession', '--session=LXDE-pi','--reload'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)                
+        click.echo(click.style(f'Refreshing Lxpanel', fg='green'))
         subprocess.Popen(['setsid', 'lxpanel', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
+        click.echo(click.style(f'Refreshing Desktop', fg='green'))
         subprocess.Popen(['setsid', 'pcmanfm', '--desktop', '--profile', 'LXDE-pi'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
+        click.echo(click.style(f'Refreshing Mutter', fg='green'))
         subprocess.Popen(['setsid', 'mutter', '--replace'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-        
-  
+
     if DE == 'plasma' and WM =='kwin':
-        # Kde cursors not setting automatically so setting manually
-        if os.path.isfile(f'{SlotsFolder}/{slotname}/cursorTheme'):
-            CursorThemeFile = open(f'{SlotsFolder}/{slotname}/cursorTheme')
-            CursorTheme = CursorThemeFile.read()
-            CursorTheme = CursorTheme.strip("'")
-            print(f'gsettings set org.gnome.desktop.interface cursor-theme {CursorTheme}')
-            os.system(f'gsettings set org.gnome.desktop.interface cursor-theme {CursorTheme}')
+        click.echo(click.style('=========[ RESTORING PLASMA CONFIGS ]=========', fg='green'))
+        os.system(f'mkdir ~/.config_backups/"{backupFolder}"/share')
 
-        os.system('setsid qdbus org.kde.KWin /KWin reconfigure &>/dev/null')
-        os.system('setsid konsole -e kquitapp5 plasmashell && kstart5 plasmashell --windowclass plasmashell --window Desktop &>/dev/null')
+        for file in RequiredKDELocal:
+            os.system(f'mv ~/.local/share/{file} ~/.config_backups/"{backupFolder}"/share &>/dev/null')
+            os.system(f'cp -rf {SlotsFolder}/"{slotname}"/share/{file} ~/.local/share/ &>/dev/null')
 
+        for config in os.listdir(f'{SlotsFolder}/{slotname}/configs/'):
+            click.echo(click.style(f'Restoring Config: ', fg='green') + click.style(f'{config}', fg='blue'))
+            os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}" &>/dev/null')
+            os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{config} ~/.config &>/dev/null')
+
+        WallpaperPath = os.popen(f"sed -n '/Image=/p' ~/.config/plasma-org.kde.plasma.desktop-appletsrc").read().strip()
+        theme = os.popen('sed -n "/LookAndFeelPackage=/p" ~/.config/kdeglobals').read().replace('LookAndFeelPackage=', '')
+
+        # Refreshing KDE Desktop
+        print()
+        click.echo(click.style('=========[ REFRESHING DESKTOP ]=========', fg='green'))
+        # os.system('setsid qdbus org.kde.KWin /KWin reconfigure &>/dev/null')
+        
+        click.echo(click.style(f'Loading Plasma Theme: ', fg='green') + click.style(f'{theme.strip()}', fg='blue'))
+        subprocess.Popen(f'lookandfeeltool -a {theme.strip()}'.split(' '), stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)
+        click.echo(click.style(f'Using Wallpaper: ', fg='green')  + click.style(f'{SlotsFolder}/{slotname}/Wallpaper.png', fg='blue'))
+        os.system(f'sed -i "s#{WallpaperPath.strip()}#Image=file://{SlotsFolder}/{slotname}/Wallpaper.png#g" ~/.config/plasma-org.kde.plasma.desktop-appletsrc')
+        time.sleep(2)
+        click.echo(click.style(f'Applying Icon Theme: ', fg='green') + click.style(f'{info["iconTheme"]}', fg='blue'))
+        subprocess.Popen(f'/usr/lib/plasma-changeicons {info["iconTheme"]}'.split(' '), stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        click.echo(click.style('Refreshing ', fg='green')  + click.style(f'Kwin', fg='blue'))
+        subprocess.Popen('setsid qdbus org.kde.KWin /KWin reconfigure'.split(' '), stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)
+        click.echo(click.style('Refreshing ', fg='green') + click.style(f'Plasmashell', fg='blue'))
+        os.system('/bin/bash -c "setsid kquitapp5 plasmashell > /dev/null  2>&1"')
+        os.system('/bin/bash -c "setsid kstart5 plasmashell > /dev/null 2>&1"')
+        
+
+
+        
 
 @click.command( help='List all saved slots')
 @click.option('--all/--no-all', default=False)
@@ -355,28 +370,27 @@ def export(slotname, filepath):
     os.mkdir(Path(filepath/slotname))        
 
     # A Function to find where the icon theme or cursor is stored
-    def checkUsrLocal(path, name, Filepath):
+    def checkUsrLocal(path, name, Filepath, message):
         paths = [f'/usr/share/{path}' + name.strip("'"), f'{HomePath}/.local/share/{path}' + name.strip("'"), f'{HomePath}/.{path}' + name.strip("'")]
         for p in paths:
             if os.path.isdir(p):
                 os.system(f'cp -rf {p} {Filepath}')
+                click.echo(click.style(f'Exporting {message}: ', fg='green') + click.style(f'{p}', fg='blue'))
+                break
 
     info = json.load(open(f'{SlotsFolder}/{slotname}/info.json'))
 
+    click.echo(click.style(f'=========[ EXPORTING SLOT: {slotname} ]=========', fg='green'))
+    print()
+
     os.mkdir(Path(filepath / slotname / 'theme'))
-    checkUsrLocal(f'themes/', info['gtkTheme'], f'{filepath}/{slotname}/theme/' )
+    checkUsrLocal(f'themes/', info['gtkTheme'], f'{filepath}/{slotname}/theme/', 'GtkTheme' )
 
     os.mkdir(Path(filepath / slotname / 'icons'))
-    checkUsrLocal(f'icons/', info['iconTheme'] , f'{filepath}/"{slotname}"/icons/')
+    checkUsrLocal(f'icons/', info['iconTheme'] , f'{filepath}/"{slotname}"/icons/', 'IconTheme')
 
     os.mkdir(Path(filepath / slotname / 'cursors'))
-    checkUsrLocal(f'icons/', info['cursorTheme'], f'{filepath}/"{slotname}"/cursors/')
-
-    # Exporting Wallpaper
-    if os.path.isfile(f'{SlotsFolder}/{slotname}/Wallpaper'):
-        Wallpaper = Path(SlotsFolder / slotname / 'Wallpaper')
-        os.mkdir(Path(filepath / slotname / 'wallpaper'))
-        os.system(f"cp -r {Wallpaper} {Path(filepath / slotname / 'wallpaper')}")
+    checkUsrLocal(f'icons/', info['cursorTheme'], f'{filepath}/"{slotname}"/cursors/', 'Cursors')
 
     # Exporting Plank Theme
     if os.path.isdir(f'{SlotsFolder}/{slotname}/plank'):
@@ -390,8 +404,11 @@ def export(slotname, filepath):
     # Exporting Slot
     os.system(f'mkdir {filepath}/"{slotname}"/slot/')
     os.system(f'cp -rf {SlotsFolder}/"{slotname}" {filepath}/"{slotname}"/slot/')
+    click.echo(click.style(f'Exporting ', fg='green') + click.style(f'Slot Folder', fg='blue'))
 
     # Compressing files
+    print()
+    click.echo(click.style(f'Compressing Archive', fg='green'))
     tar = tarfile.open(f'{filepath}/{slotname}.tar.gz', 'w:gz')
     tar.add(f'{filepath}/{slotname}', arcname=f'{slotname}')
     tar.close()
@@ -399,7 +416,7 @@ def export(slotname, filepath):
     # Cleaning Up
     os.system(f'rm -rf {filepath}/"{slotname}"')
 
-    click.echo(click.style('Finished exporting slot ', fg='green'))
+    click.echo(click.style('Slot Exported To: ', fg='green') + click.style(f'{filepath}/{slotname}.tar.gz', fg='blue'))
 
 
 @click.command(help='Import Slot')
@@ -435,7 +452,6 @@ def Import(filepath, shop):
     if shop == True:
         filepath = getShop()
 
-    # print(filepath)
     tarFile = tarfile.open(filepath)
     slotname = tarFile.getnames()[0]
 
@@ -485,16 +501,6 @@ def Import(filepath, shop):
         click.echo(click.style('Importing Plank Theme', fg='green'))
         os.system(f'cp -rf {Path(ImportSlotDir)}/plank/* /usr/share/plank/themes/ &> /dev/null')
 
-
-    click.echo(click.style('Importing Wallpaper', fg='green'))
-    WallpaperPath = open(f"{Path(ImportSlotDir)}/slot/{os.listdir(f'{FolderPath}/import')[0]}/wallpaperPath").read()
-    WallpaperFolder = '/'.join(WallpaperPath.split('/')[:-1])
-    
-    os.system(f'rm {WallpaperPath}')
-    if not os.path.isdir(WallpaperFolder):
-        os.makedirs(WallpaperFolder)
-    os.system(f'cp {Path(ImportSlotDir)}/wallpaper/* {WallpaperPath}')
-
     #Removing import directory after Importing files
     os.system(f'rm -rf {ImportDir}')
 
@@ -502,15 +508,12 @@ def Import(filepath, shop):
         os.system(f'rm {filepath}')
 
     click.echo(click.style('Finished importing slot :)', fg='green'))
-
     quit()
 
 
 @click.command(help='Launch the gui app for themesaver')
 def gui():
     os.system(f'python3 {FolderPath}/GUI/MainWindow.py')
-
-
 
 group.add_command(save)
 group.add_command(load)
