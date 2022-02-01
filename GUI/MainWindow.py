@@ -10,6 +10,7 @@ import webbrowser
 from dotenv import load_dotenv, dotenv_values
 import tarfile
 from pathlib import Path
+import json
 
 
 AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/ThemeSaver/config.env")
@@ -104,7 +105,16 @@ class MainWin(QMainWindow):
         if not os.path.isdir(f'{FolderPath}/Slots'):
             os.mkdir(f'{FolderPath}/Slots')
 
-        if len(os.listdir(f'{FolderPath}/Slots')) == 0:
+        self.SlotNames = []
+
+        for slotname in os.listdir(f"{FolderPath}/Slots/"):
+            DE = os.environ['DESKTOP_SESSION'].lower()
+            WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
+            jsonFile = json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))
+            if jsonFile['desktopEnvironment'] == DE and jsonFile['windowManager'] == WM:
+                self.SlotNames.append(slotname)
+
+        if len(self.SlotNames) == 0:
             NoSlots = QMessageBox()
             NoSlots.setText("There are no saved slots")
             NoSlots.setIcon(QMessageBox.Critical)
