@@ -49,7 +49,7 @@ def save(slotname):
             print(click.style('Not overwriting', fg='green'))
             quit()
 
-
+    click.echo(click.style('======= Saving Slot =======', fg='green'))
 
     # Creating Slot
     os.mkdir(Path(SlotsFolder / slotname))
@@ -179,6 +179,9 @@ def save(slotname):
     jsonPath.write_text(json.dumps(info , indent = 4))
 
     print()
+
+    os.system(f'touch {SlotsFolder}/"{slotname}"/import.sh')
+
     click.echo(click.style('======= Slot Info =======', fg='green'))
 
     for info,value in info.items():
@@ -500,6 +503,10 @@ def Import(filepath, shop):
     if Path(ImportSlotDir / 'plank').exists():
         click.echo(click.style('Importing Plank Theme', fg='green'))
         os.system(f'cp -rf {Path(ImportSlotDir)}/plank/* /usr/share/plank/themes/ &> /dev/null')
+
+    click.echo(click.style('Running import script', fg='green'))
+    os.system(f'chmod +x {Path(ImportSlotDir)}/slot/*/import.sh')
+    os.system(f'{Path(ImportSlotDir)}/slot/*/import.sh')
 
     #Removing import directory after Importing files
     os.system(f'rm -rf {ImportDir}')
