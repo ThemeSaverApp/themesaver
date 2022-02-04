@@ -419,8 +419,6 @@ def export(slotname, filepath):
     # Cleaning Up
     os.system(f'rm -rf {filepath}/"{slotname}"')
 
-    os.system(f'cp {SlotsFolder}/"{slotname}"/info.json {filepath}/info.json')
-
     click.echo(click.style('Slot Exported To: ', fg='green') + click.style(f'{filepath}/{slotname}.tar.gz', fg='blue'))
 
 
