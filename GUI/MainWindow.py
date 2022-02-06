@@ -24,7 +24,7 @@ if not 'icon-color' in AppConfig.keys():
 from SaveSlotWindow import SaveSlotWindow
 from LoadSlotWindow import LoadSlotWindow
 from ImportSlotWindow import ImportSlotWindow
-# from test import LoadingAnimation
+
 
 
 try:

@@ -198,7 +198,6 @@ def load(slotname, gui):
         quit()
 
     info = json.load(open(f'{SlotsFolder}/{slotname}/info.json'))
-    print(info)
     if info['desktopEnvironment'] != DE and info['windowManager'] != WM:
         click.echo(click.style(f'The is slot was made for the {desktopEnvironment} Desktop Environment and the {windowManager} window manager', fg='red'))
         quit()
@@ -222,6 +221,14 @@ def load(slotname, gui):
     backupFolder = f'Backup - {str(time.strftime("%a, %H:%M:%S", time.localtime()))}'
     os.system(f'mkdir ~/.config_backups/"{backupFolder}"')
 
+    # Restoring Config Files
+    click.echo(click.style(f'=========[ RESTORING CONFIG FILES ]=========', fg='green'))
+    for config in os.listdir(f'{SlotsFolder}/{slotname}/configs'):
+        click.echo(click.style(f'Restoring Config: ', fg='green') + click.style(f'{config}', fg='blue'))
+        os.system(f'mv ~/.config/{config} ~/.config_backups/"{backupFolder}" &>/dev/null')
+        os.system(f'cp -rf {SlotsFolder}/"{slotname}"/configs/{config} ~/.config/')
+
+
     # Using subprocesss to run apps as os.system is not working properly with &>/dev/null
     def runApp(app, config):
         if Path(f'{SlotsFolder}/{slotname}/configs/{config}').exists():
@@ -240,9 +247,8 @@ def load(slotname, gui):
 
     if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/qtile'):
         os.system('qtile cmd-obj -o cmd -f restart')
+        os.system(f'nitrogen --save {AppConfig["NitrogenStyle"]} {SlotsFolder}/"{slotname}"/Wallpaper.png &>/dev/null')
 
-    if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/nitrogen'):
-        os.system(f'nitrogen --save {AppConfig["NitrogenStyle"]} {SlotsFolder}/"{slotname}"/Wallpaper &>/dev/null')
 
     if DE == 'xfce':
         for PropertyFolders in RequiredChannelsXfce:
@@ -415,6 +421,8 @@ def export(slotname, filepath):
     tar = tarfile.open(f'{filepath}/{slotname}.tar.gz', 'w:gz')
     tar.add(f'{filepath}/{slotname}', arcname=f'{slotname}')
     tar.close()
+
+    os.system(f'cp {SlotsFolder}/"{slotname}"/info.json {filepath}/info.json')
 
     # Cleaning Up
     os.system(f'rm -rf {filepath}/"{slotname}"')

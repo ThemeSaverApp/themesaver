@@ -100,6 +100,8 @@ class ShopWindow(QDialog):
             run = InvalidRepo.exec_()
             return None            
 
+        os.system(f'python3 ~/.themesaver/GUI/LoadingWindow.py  "Installing Slot" Importing &')
+
         for i in r.json()['tree']:
             if i['path'].endswith('.tar.gz'):
                 archive = requests.get(f'https://github.com/{url[0]}/blob/{url[1]}/{i["path"]}?raw=true', allow_redirects=True)
@@ -117,8 +119,7 @@ class ShopWindow(QDialog):
                 return None            
 
 
-        os.system(f'python3 {FolderPath}/GUI/LoadingWindow.py  "Installing Slot" Importing &')
-        os.system(f'themesaver import --shop {Repo} --gui {tarFileLocation}')
+        os.system(f'themesaver import {tarFileLocation}')
         os.system('pkill -f LoadingWindow.py')
 
         FinishedSaving = QMessageBox()
