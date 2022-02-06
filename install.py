@@ -16,7 +16,7 @@ if os.path.isfile("/usr/bin/apt"):
 DE = os.environ["DESKTOP_SESSION"]
 
 click.echo(click.style('\nChecking if your Desktop environment and Window manager is supported', fg='blue'))
-if not os.path.isfile("/usr/bin/wmctrl") and nd:
+if not os.path.isfile("/usr/bin/wmctrl") and installDependencies:
     if package_manager == 'pacman':
         os.system('sudo pacman -S wmctrl --noconfirm --noprogressbar --needed')
     elif package_manager == 'apt':
