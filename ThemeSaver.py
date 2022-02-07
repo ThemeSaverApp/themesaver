@@ -153,7 +153,7 @@ def save(slotname):
     if WM == 'awesome':
         os.system(f'cp -rf ~/.config/awesome {SlotsFolder}/"{slotname}"/configs &>/dev/null')
 
-    if WM == 'qtile':
+    if WM == 'qtile' or WM == 'lg3d':
         os.system(f'cp -rf ~/.config/qtile {SlotsFolder}/"{slotname}"/configs &>/dev/null')
         WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '') 
 
