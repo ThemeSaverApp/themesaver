@@ -403,7 +403,7 @@ def export(slotname, filepath):
 
     # Exporting Plank Theme
     if os.path.isdir(f'{SlotsFolder}/{slotname}/plank'):
-        PlankTheme = open(f'{SlotsFolder}/{slotname}/plank/theme').read_text().strip().replace("'", '')
+        PlankTheme = open(f'{SlotsFolder}/{slotname}/plank/theme').read().strip().replace("'", '')
         os.system(f'mkdir {filepath}/"{slotname}"/plank')
         if os.path.isdir(f'{HomePath}/.local/share/plank/themes/{PlankTheme}'):
             os.system(f'cp -rf {HomePath}/.local/share/plank/themes/{PlankTheme} {filepath}/"{slotname}"/plank')
