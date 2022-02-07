@@ -89,7 +89,7 @@ for path in os.environ['PATH'].split(':'):
         break
 
 shell = os.environ['SHELL'].strip().replace('/', '').replace('usr', '').replace('bin', '')
-if shell == 'bash' and noBin:
+if shell == 'bash' and noBin == False:
     click.echo(click.style('Adding local bin to path', fg='blue'))
     os.system("echo 'export PATH=~/.local/bin/:$PATH' >> ~/.bashrc")
 
