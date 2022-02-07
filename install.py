@@ -89,8 +89,12 @@ for path in os.environ['PATH'].split(':'):
         break
 
 shell = os.environ['SHELL'].strip().replace('/', '').replace('usr', '').replace('bin', '')
-if shell == 'bash' and noBin == False:
+if noBin == False:
     click.echo(click.style('Adding local bin to path', fg='blue'))
-    os.system("echo 'export PATH=~/.local/bin/:$PATH' >> ~/.bashrc")
+    if shell == 'bash':
+        os.system("echo 'export PATH=~/.local/bin/:$PATH' >> ~/.bashrc")
+    elif shell == 'zsh':
+        os.system("echo 'export PATH=~/.local/bin/:$PATH' >> ~/.zshrc")
+    
 
 click.echo(click.style('\nFinished Installing Themesaver', fg='green'))
