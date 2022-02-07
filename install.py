@@ -24,7 +24,7 @@ if not os.path.isfile("/usr/bin/wmctrl") and installDependencies:
     
 WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '')    
 
-SupportedDE_WM = ['xfce', 'xfwm4', 'plasma', 'kwin','qtile']
+SupportedDE_WM = ['xfce', 'xfwm4', 'plasma', 'kwin','qtile', 'lg3d']
 
 if not DE.lower() in SupportedDE_WM or not WM.lower() in SupportedDE_WM:      
         click.echo(click.style('Your Desktop Environment and Window Manager Is Not Supported', fg='red')) 
