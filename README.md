@@ -88,8 +88,8 @@ wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.
 To manually install ThemeSaver:
  
 ```
-git clone https://github.com/techcoer20/themesaver ~/ThemeSaver
-python3 ~/.themesaver/install.py
+git clone https://github.com/techcoder20/themesaver ~/ThemeSaver
+python3 ~/ThemeSaver/install.py
 ```
 </details>
 
