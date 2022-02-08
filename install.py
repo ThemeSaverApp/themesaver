@@ -43,11 +43,6 @@ if package_manager == 'pacman' and installDependencies:
 elif package_manager == 'apt' and installDependencies:    
     os.system("sudo apt update && sudo apt -y install xdotool fonts-ubuntu imagemagick scrot python3-pyqt5 python3-pip gnome-shell-extensions gnome-tweaks")
 
-# Cloning Repo
-if not os.path.isdir(f"{os.environ['HOME']}/.themesaver/"):
-    click.echo(click.style('\n=========[ Cloning Github Repo ]=========', fg='green'))
-    os.system("git clone https://github.com/techcoder20/themesaver ~/.themesaver")
-
 if DE == 'xfce' and installDependencies:
     if package_manager == 'pacman':
         os.system('sudo pacman -S xfce4-panel-profiles --noconfirm --noprogressbar --needed')
