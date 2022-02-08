@@ -77,6 +77,8 @@ class LoadSlotWindow(QDialog):
         DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
         if len(DE.split(':')) != 1:
             DE = DE.split(':')[1]
+        if DE.strip() == '':
+            DE = WM
 
         WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
 

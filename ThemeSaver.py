@@ -21,6 +21,8 @@ DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
 if len(DE.split(':')) != 1:
     DE = DE.split(':')[1]
 WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
+if DE.strip() == '':
+    DE = WM
 HomePath = os.environ['HOME']
 
 # Folder Paths

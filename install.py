@@ -23,8 +23,10 @@ if not os.path.isfile("/usr/bin/wmctrl") and installDependencies:
         os.system('sudo pacman -S wmctrl --noconfirm --noprogressbar --needed')
     elif package_manager == 'apt':
         os.system('sudo apt -y install wmctrl')
-    
+
 WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
+if DE.strip() == '':
+    DE = WM
 
 SupportedDE_WM = ['xfce', 'xfwm4', 'plasma', 'kde','kwin','qtile', 'lg3d', 'gnome', 'gnome shell']
 
