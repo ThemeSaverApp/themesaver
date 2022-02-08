@@ -17,6 +17,7 @@ class LoadingAnimation(QDialog):
 
         uic.loadUi(f'{FolderPath}/GUI/Design/LoadingWindow.ui', self)   
 
+        self.setWindowIcon(QtGui.QIcon(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/ThemeSaver.png"))
         self.setStyleSheet(f"background-color: {AppConfig['background-color']};\n")
 
         self.movie = QMovie(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/Exporting.gif")

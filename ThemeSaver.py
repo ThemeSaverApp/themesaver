@@ -17,7 +17,9 @@ RequiredKDELocal = convertArray('KDELocal')
 PlankProperties = convertArray('Plank')
 Configs = convertArray('Configs')
 
-DE = os.environ['DESKTOP_SESSION'].lower()
+DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
+if len(DE.split(':')) != 1:
+    DE = DE.split(':')[1]
 WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
 HomePath = os.environ['HOME']
 
@@ -133,11 +135,7 @@ def save(slotname):
             os.system(f'rm {SlotsFolder}/{channel.strip()}')
         os.system(f'xfce4-panel-profiles save {SlotsFolder}/"{slotname}"/"{slotname}"')
 
-        if DE == 'xfce' and WM == 'xfwm4':
-            for path in os.listdir(f'{SlotsFolder}/{slotname}/xfce4-desktop'):
-                if path.endswith('last-image'):
-                    WallpaperPath = open(f'{SlotsFolder}/{slotname}/xfce4-desktop/{path}').read().strip()
-                    break
+        WallpaperPath = os.popen('''xfconf-query -c xfce4-desktop -p /backdrop/screen0/$(xrandr|awk '/\<connected/{print "monitor"$1}')/workspace0/last-image''').read().strip()
 
 
     if  DE == 'lxde-pi':
@@ -157,7 +155,11 @@ def save(slotname):
         os.system(f'cp -rf ~/.config/qtile {SlotsFolder}/"{slotname}"/configs &>/dev/null')
         WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '') 
 
-    os.system(f'cp "{WallpaperPath}" {SlotsFolder}/"{slotname}"/Wallpaper.png')
+    if DE == 'gnome' and WM == 'gnome shell':
+        os.system(f'dconf dump / > {SlotsFolder}/"{slotname}"/{slotname}')
+        WallpaperPath = os.popen('gsettings get org.gnome.desktop.background picture-uri').read().strip().replace('file://', '').replace('\'', '')
+
+    os.system(f'cp \'{WallpaperPath}\' \'{SlotsFolder}/{slotname}/Wallpaper.png\'')
 
     Theme = os.popen('gsettings get org.gnome.desktop.interface gtk-theme').read().strip().strip("'")
     IconTheme = os.popen('gsettings get org.gnome.desktop.interface icon-theme').read().strip().strip("'")
@@ -170,9 +172,14 @@ def save(slotname):
         "cursorTheme": CursorTheme,
         "shell": os.environ['SHELL'].replace('/', '').replace('bin', '').replace('usr', ''),
         "desktopEnvironment": DE.strip(),
-        "windowManager": WM.strip()
+        "windowManager": WM.strip(),
     }
 
+    if DE == 'gnome' and WM == 'gnome shell':
+        gnomeExtensions = os.popen('gsettings get org.gnome.shell enabled-extensions').read().replace(' ', '').replace('\'', '').replace('[', '').replace(']', '').split(',')
+        for ext in gnomeExtensions:
+            gnomeExtensions[gnomeExtensions.index(ext)] = ext.strip()
+        info['gnomeExtensions'] = gnomeExtensions
   
     # Serializing json 
     jsonPath = Path(SlotsFolder / slotname / 'info.json')
@@ -207,9 +214,7 @@ def load(slotname, gui):
         subprocess.Popen(['setsid', 'plank'],
                          stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         for PlankConfig in os.listdir(f'{SlotsFolder}/{slotname}/plank'):
-            PlankConfigFile = open(
-                f'{SlotsFolder}/{slotname}/plank/{PlankConfig}')
-            PlankConfigData = PlankConfigFile.read()
+            PlankConfigData = open(f'{SlotsFolder}/{slotname}/plank/{PlankConfig}').read()
             os.system(
                 f'gsettings set net.launchpad.plank.dock.settings:/net/launchpad/plank/docks/dock1/ {PlankConfig} {PlankConfigData}')
     # Killing Plank If Configs dont exist
@@ -262,6 +267,8 @@ def load(slotname, gui):
 
         os.system(f'xfce4-panel-profiles load {SlotsFolder}/"{slotname}"/"{slotname}"')
         subprocess.Popen(['setsid', 'xfce4-panel', '&>/dev/null'],stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        # Setting Wallpaper
+        os.system('''xfconf-query -c xfce4-desktop -p /backdrop/screen0/$(xrandr|awk '/\<connected/{print "monitor"$1}')/workspace0/last-image -s ''' + f'"{SlotsFolder}/{slotname}/Wallpaper.png"')
 
     if DE == 'lxde-pi':
         click.echo(click.style('=========[ RESTORING LXDE CONFIGS ]=========', fg='green'))
@@ -326,9 +333,27 @@ def load(slotname, gui):
         os.system('/bin/bash -c "setsid kquitapp5 plasmashell > /dev/null  2>&1"')
         os.system('/bin/bash -c "setsid kstart5 plasmashell > /dev/null 2>&1"')
         
+    if DE == 'gnome' and WM == 'gnome shell':
+        click.echo(click.style('Restoring Config: ', fg='green') + click.style('dconf', fg='blue'))
+        os.system(f'dconf load / < {SlotsFolder}/"{slotname}"/{slotname}')
+        click.echo(click.style('\n=========[ REFRESHING GNOME EXTENSIONS ]=========', fg='green'))
+        allExtenstions = os.listdir(f'{HomePath}/.local/share/gnome-shell/extensions') + os.listdir(f'/usr/share/gnome-shell/extensions/')
 
+        # Checking ubuntu dock seperately cause if it loads after something like dash to dock it overwrites it
+        if 'ubuntu-dock@ubuntu.com' in info['gnomeExtensions']:
+            click.echo(click.style(f'Refreshing Extension: ', fg='green') + click.style(f'ubuntu-dock@ubuntu.com', fg='blue'))
+            os.system(f'gnome-extensions disable ubuntu-dock@ubuntu.com')
+            os.system(f'gnome-extensions enable ubuntu-dock@ubuntu.com')
 
-        
+        for extension in allExtenstions:
+            if extension in info['gnomeExtensions']:
+                if extension != 'ubuntu-dock@ubuntu.com':
+                    click.echo(click.style(f'Refreshing Extension: ', fg='green') + click.style(f'{extension}', fg='blue'))
+                    os.system(f'gnome-extensions disable {extension}')
+                    os.system(f'gnome-extensions enable {extension}')
+            else:
+                os.system(f'gnome-extensions disable {extension}')
+
 
 @click.command( help='List all saved slots')
 @click.option('--all/--no-all', default=False)
@@ -374,6 +399,11 @@ def export(slotname, filepath):
         click.echo(click.style('No slot like that. Use command "themesaver ls" to print the list of saved slots', fg='red'))
         quit()
 
+    if DE == 'gnome' and WM == 'gnome shell':
+        click.echo(click.style('Gnome Export Is Still a work in progress :(', fg='red'))
+        quit()
+
+
     if Path(filepath/slotname).exists():
         os.system(f'rm -rf {Path(filepath/slotname)}')
     os.mkdir(Path(filepath/slotname))        
@@ -400,6 +430,15 @@ def export(slotname, filepath):
 
     os.mkdir(Path(filepath / slotname / 'cursors'))
     checkUsrLocal(f'icons/', info['cursorTheme'], f'{filepath}/"{slotname}"/cursors/', 'Cursors')
+
+    # if DE == 'gnome' and WM == 'gnome shell':
+    #     os.mkdir(Path(filepath / slotname / 'gnomeExtensions'))
+    #     for extension in info['gnomeExtensions']:
+    #         if os.path.isdir(f'{HomePath}/.local/share/gnome-shell/extensions/{extension}'):
+    #             os.system(f'cp -r "{HomePath}/.local/share/gnome-shell/extensions/{extension}" "{filepath}/{slotname}/gnomeExtensions"')
+    #         elif os.path.isdir(f'/usr/share/gnome-shell/extensions/{extension}'):
+    #             os.system(f'cp -r "/usr/share/gnome-shell/extensions/{extension}" "{filepath}/{slotname}/gnomeExtensions"')
+
 
     # Exporting Plank Theme
     if os.path.isdir(f'{SlotsFolder}/{slotname}/plank'):
@@ -441,6 +480,11 @@ def Import(filepath, shop):
         if not Path(filepath).exists() or not filepath.endswith('.tar.gz'):
             print(f'{filepath} is not a valid filepath')
             exit()
+
+    if DE == 'gnome' and WM == 'gnome shell':
+        click.echo(click.style('Gnome Import Is Still a work in progress :(', fg='red'))
+        quit()
+
 
     # Removing and creating import directory
     os.system(f'rm -rf {ImportDir}')
@@ -488,11 +532,8 @@ def Import(filepath, shop):
             tar.extract(member, f'{FolderPath}/import/')
         tar.close()
 
-    print()
-
-
     #Importing themes and other stuff
-    click.echo(click.style('Importing Slot', fg='green'))
+    click.echo(click.style('\nImporting Slot', fg='green'))
     os.system(f'cp -rf {Path(ImportSlotDir)}/slot/* {SlotsFolder}/ &> /dev/null')
 
     click.echo(click.style('Importing Themes', fg='green'))
@@ -502,15 +543,24 @@ def Import(filepath, shop):
 
     click.echo(click.style('Importing Icons', fg='green'))
     if not os.path.isdir(Path('~/.local/share/icons').expanduser()):
-        os.mkdir(Path('~/.local/share/icons').expanduser())    
+        os.mkdir(Path('~/.local/share/icons').expanduser()) 
     os.system(f'cp -rf {Path(ImportSlotDir)}/icons/* ~/.local/share/icons &> /dev/null')
 
     click.echo(click.style('Importing Cursors', fg='green'))
-    os.system(f'cp -rf {Path(ImportSlotDir)}/cursors/* /usr/share/icons/ &> /dev/null')
+    os.system(f'cp -rf {Path(ImportSlotDir)}/cursors/* ~/.local/share/icons &> /dev/null')
+
+    # if os.path.isdir(f'{Path(ImportSlotDir)}/gnomeExtensions'):
+    #     click.echo(click.style('Importing Gnome Extensions', fg='green'))
+    #     os.system(f'mkdir ~/.local/share/gnome-shell/extensions')
+    #     os.system(f'cp -rf {Path(ImportSlotDir)}/gnomeExtensions/* {HomePath}/.local/share/gnome-shell/extensions/ &> /dev/null')
+    #     # Refreshing gnome shell so that the extenstions are registered by the gnome shell
+    #     os.system(f''' busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'Meta.restart("Restarting…")' ''')
 
     if Path(ImportSlotDir / 'plank').exists():
         click.echo(click.style('Importing Plank Theme', fg='green'))
-        os.system(f'cp -rf {Path(ImportSlotDir)}/plank/* /usr/share/plank/themes/ &> /dev/null')
+        os.system('mkdir ~/.local/share/plank')
+        os.system('mkdir ~/.local/share/plank/themes')
+        os.system(f'cp -rf {Path(ImportSlotDir)}/plank/* ~/.local/share/plank/themes &> /dev/null')
 
     click.echo(click.style('Running import script', fg='green'))
     os.system(f'chmod +x {Path(ImportSlotDir)}/slot/*/import.sh')

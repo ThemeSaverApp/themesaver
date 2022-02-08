@@ -66,6 +66,8 @@ class MainWin(QMainWindow):
             
             widget.setIcon(icon)
 
+        self.setWindowIcon(QtGui.QIcon(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/ThemeSaver.png"))
+
         self.SaveSlotBtn = self.findChild(QPushButton, 'SaveSlotBtn')
         self.SaveSlotBtn.clicked.connect(self.SaveSlot)
         SetIcon(self.SaveSlotBtn, 'Save')
@@ -107,9 +109,13 @@ class MainWin(QMainWindow):
 
         self.SlotNames = []
 
+        DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
+        if len(DE.split(':')) != 1:
+            DE = DE.split(':')[1]
+
+        WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
+
         for slotname in os.listdir(f"{FolderPath}/Slots/"):
-            DE = os.environ['DESKTOP_SESSION'].lower()
-            WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
             jsonFile = json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))
             if jsonFile['desktopEnvironment'] == DE and jsonFile['windowManager'] == WM:
                 self.SlotNames.append(slotname)

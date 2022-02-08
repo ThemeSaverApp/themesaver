@@ -23,6 +23,7 @@ class SaveSlotWindow(QDialog):
 
         self.setStyleSheet(f"background-color: {AppConfig['background-color']};\n")
 
+        self.setWindowIcon(QtGui.QIcon(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/ThemeSaver.png"))
         self.SaveSlotBtn = self.findChild(QPushButton, 'SaveSlotBtn')
         self.SaveSlotBtn.clicked.connect(self.SaveSlot)
         self.SaveSlotBtn.setStyleSheet(f'''

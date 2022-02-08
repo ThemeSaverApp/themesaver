@@ -20,6 +20,7 @@ class ImportSlotWindow(QDialog):
         uic.loadUi(f'{FolderPath}/GUI/Design/ImportWindow.ui', self)
         self.setStyleSheet(f"background-color: {AppConfig['background-color']};\n")
 
+        self.setWindowIcon(QtGui.QIcon(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/ThemeSaver.png"))
         self.LocalBtn = self.findChild(QPushButton, 'LocalBtn')
         self.LocalBtn.clicked.connect(self.ImportSlot)
         self.LocalBtn.setStyleSheet(f'''

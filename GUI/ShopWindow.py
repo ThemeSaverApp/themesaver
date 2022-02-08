@@ -20,9 +20,10 @@ class ShopWindow(QDialog):
         uic.loadUi(f'{FolderPath}/GUI/Design/ShopWindow.ui', self)
         self.show()
 
+
         self.setStyleSheet(f"background-color: {AppConfig['background-color']};\n")
 
-
+        self.setWindowIcon(QtGui.QIcon(f"{FolderPath}/GUI/Icons/{AppConfig['icon-pack']}/ThemeSaver.png"))
         self.RepoLink = self.findChild(QTextEdit, 'RepoLink')
         self.RepoLink.setStyleSheet(f'''
         color: {AppConfig['text-color']};
