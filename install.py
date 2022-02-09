@@ -13,9 +13,12 @@ if os.path.isfile("/usr/bin/pacman"):
 if os.path.isfile("/usr/bin/apt"):
     package_manager='apt'  
 
-DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
-if len(DE.split(':')) != 1:
-    DE = DE.split(':')[1]
+if 'XDG_CURRENT_DESKTOP' in os.environ.keys():
+    DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
+    if len(DE.split(':')) != 1:
+        DE = DE.split(':')[1]
+elif 'DESKTOP_SESSION' in os.environ.keys():
+    DE = os.environ['DESKTOP_SESSION'].lower().strip()
 
 click.echo(click.style('\nChecking if your Desktop environment and Window manager is supported', fg='blue'))
 if not os.path.isfile("/usr/bin/wmctrl") and installDependencies:
@@ -28,7 +31,7 @@ WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
 if DE.strip() == '':
     DE = WM
 
-SupportedDE_WM = ['xfce', 'xfwm4', 'plasma', 'kde','kwin','qtile', 'lg3d', 'gnome', 'gnome shell']
+SupportedDE_WM = ['xfce', 'xfwm4', 'plasma', 'kde','kwin','qtile', 'lg3d', 'gnome', 'gnome shell', 'awesome']
 
 if not DE in SupportedDE_WM or not WM in SupportedDE_WM:      
         click.echo(click.style(f'The Desktop Environment {DE} and Window Manager {WM} Is Not Supported', fg='red')) 
