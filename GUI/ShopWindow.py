@@ -101,7 +101,7 @@ class ShopWindow(QDialog):
             run = InvalidRepo.exec_()
             return None            
 
-        os.system(f'python3 ~/.themesaver/GUI/LoadingWindow.py  "Installing Slot" Importing &')
+        os.system(f'python3 {AppConfig["FolderPath"]}/GUI/LoadingWindow.py  "Installing Slot" Importing &')
 
         for i in r.json()['tree']:
             if i['path'].endswith('.tar.gz'):

@@ -89,7 +89,7 @@ To manually install ThemeSaver:
  
 ```
 git clone https://github.com/techcoer20/themesaver ~/ThemeSaver
-python3 ~/.themesaver/install.py
+python3 /opt/themesaver/install.py
 ```
 </details>
 
@@ -98,7 +98,7 @@ python3 ~/.themesaver/install.py
 If you dont like themesaver for some reason you can uninstall by running this command in a terminal.
 
 ```
-python3 ~/.themesaver/uninstall.py
+python3 /opt/themesaver/uninstall.py
 ```
 
 </details>

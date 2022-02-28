@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os, sys, time, subprocess, tarfile, click, json, pathlib, requests
 from dotenv import load_dotenv, dotenv_values
 from tqdm import tqdm
@@ -17,6 +19,8 @@ RequiredKDELocal = convertArray('KDELocal')
 PlankProperties = convertArray('Plank')
 Configs = convertArray('Configs')
 
+NumberOfMonitors = int(os.popen('xrandr --listactivemonitors').read().split('\n')[0].strip().replace('Monitors: ', ''))
+
 if 'XDG_CURRENT_DESKTOP' in os.environ.keys():
     DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
     if len(DE.split(':')) != 1:
@@ -33,6 +37,8 @@ FolderPath = Path(AppConfig['FolderPath']).expanduser()
 SlotsFolder = Path(FolderPath / 'Slots').expanduser()
 ConfigFolder = Path('~/.config').expanduser()
 
+if not SlotsFolder.exists():
+    os.system(f'mkdir {SlotsFolder}')
 
 
 @click.group()
@@ -42,16 +48,14 @@ def group():
 @click.command(help='Save a new slot')
 @click.argument('slotname' )
 def save(slotname):
-    if not SlotsFolder.exists():
-        os.system(f'mkdir {SlotsFolder}')
-
     # Overwrite Check
+    Overwrite = False
     if Path(SlotsFolder / slotname).exists():
         Overwrite = click.prompt(click.style(
             'A slot with that name already exists. Do you want to overwrite it ? [Y/n]', fg='red'), type=str)
         if Overwrite.lower() == 'y':
             click.echo(click.style('Okay overwriting', fg='green'))
-            os.system(f'rm -rf {SlotsFolder}/"{slotname}"')
+            # os.system(f'rm -rf {SlotsFolder}/"{slotname}"')
         else:
             print(click.style('Not overwriting', fg='green'))
             quit()
@@ -59,11 +63,13 @@ def save(slotname):
     click.echo(click.style('======= Saving Slot =======', fg='green'))
 
     # Creating Slot
-    os.mkdir(Path(SlotsFolder / slotname))
+    if not Overwrite:
+        os.system(f'mkdir {Path(SlotsFolder / slotname)}')
 
     # Taking a Screenshot  
     os.system(f'{FolderPath}/TakeScreenshot.sh &')
     time.sleep(0.5)
+    os.system(f'rm {SlotsFolder}/"{slotname}"/Screenshot.png')
     os.system(f'scrot {SlotsFolder}/"{slotname}"/Screenshot.png')
     os.system(f'convert {SlotsFolder}/"{slotname}"/Screenshot.png -resize 470x275 {SlotsFolder}/"{slotname}"/Screenshot.png')
 
@@ -76,7 +82,8 @@ def save(slotname):
             os.system(
                 f'gsettings get net.launchpad.plank.dock.settings:/net/launchpad/plank/docks/dock1/ {PlankProperty} > {SlotsFolder}/"{slotname}"/plank/{PlankProperty}')
 
-    os.mkdir(SlotsFolder / slotname / 'configs')
+    if not Overwrite:
+        os.system(f"mkdir {SlotsFolder}/{slotname}/'configs'")
 
     # Saving Polybar Configs If Running
     PolybarRunning = os.popen('pgrep polybar').read()
@@ -102,7 +109,8 @@ def save(slotname):
     }
 
     if shell in shells.keys():
-        os.mkdir(SlotsFolder / slotname / shell)
+        if not Overwrite:        
+            os.system(f'mkdir {Path(SlotsFolder / slotname / shell)}')
         for file in shells[shell]:
             os.system(
                 f'cp -rf {file} {SlotsFolder}/"{slotname}"/{shell}')
@@ -113,7 +121,8 @@ def save(slotname):
 
 
     if DE == 'plasma' and WM == 'kwin':
-        os.mkdir(SlotsFolder / slotname / 'share')
+        if not Overwrite:
+            os.system(f'mkdir {Path(SlotsFolder / slotname / share)}')
         for config in RequiredKDEConfig:
             os.system(f'cp -rf ~/.config/{config} {SlotsFolder}/"{slotname}"/configs &>/dev/null')
 
@@ -134,6 +143,7 @@ def save(slotname):
             PropertiesFile = open(f'{SlotsFolder}/{channel.strip()}', 'r')
             Properties = PropertiesFile.readlines()
             os.mkdir(SlotsFolder / slotname / channel.strip())
+            os.system(f'mkdir {Path(SlotsFolder / slotname / channel.strip())}')
             for Property in Properties:
                 os.system(f'xfconf-query -c {channel.strip()} -p {Property.strip()} > {SlotsFolder}/"{slotname}"/{channel.strip()}/{Property.replace("/","+")}')
 
@@ -159,13 +169,24 @@ def save(slotname):
 
     if WM == 'qtile' or WM == 'lg3d':
         os.system(f'cp -rf ~/.config/qtile {SlotsFolder}/"{slotname}"/configs &>/dev/null')
-        WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '') 
+        os.system(f'cp -r ~/.config/nitrogen {SlotsFolder}/"{slotname}"/configs')
+        WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().strip().split('\n')
+
+        for n in range(len(WallpaperPath)):
+            if n == 0:
+                os.system(f'cp \'{WallpaperPath[n].replace("file=", "").strip()}\' \'{AppConfig["FolderPath"]}/Slots/{slotname}/Wallpaper.png\'')
+                os.system(f'sed -i "s#{WallpaperPath[n].strip()}#file={AppConfig["FolderPath"]}/Slots/{slotname}/Wallpaper.png#g" /opt/themesaver/Slots/{slotname}/configs/nitrogen/bg-saved.cfg')
+            else:
+                os.system(f'cp \'{WallpaperPath[n].replace("file=", "").strip()}\' \'{AppConfig["FolderPath"]}/Slots/{slotname}/Wallpaper-Monitor{n+1}.png\'')
+                os.system(f'sed -i "s#{WallpaperPath[n].strip()}#file={AppConfig["FolderPath"]}/Slots/{slotname}/Wallpaper-Monitor{n}#g" /opt/themesaver/Slots/{slotname}/configs/nitrogen/bg-saved.cfg')
 
     if DE == 'gnome' and WM == 'gnome shell':
         os.system(f'dconf dump / > {SlotsFolder}/"{slotname}"/{slotname}')
         WallpaperPath = os.popen('gsettings get org.gnome.desktop.background picture-uri').read().strip().replace('file://', '').replace('\'', '')
 
-    os.system(f'cp \'{WallpaperPath}\' \'{SlotsFolder}/{slotname}/Wallpaper.png\'')
+    
+    if not os.path.isfile(f'{AppConfig["FolderPath"]}/Slots/{slotname}/Wallpaper.png'):
+        os.system(f'cp \'{WallpaperPath}\' \'{SlotsFolder}/{slotname}/Wallpaper.png\'')
 
     Theme = os.popen('gsettings get org.gnome.desktop.interface gtk-theme').read().strip().strip("'")
     IconTheme = os.popen('gsettings get org.gnome.desktop.interface icon-theme').read().strip().strip("'")
@@ -259,7 +280,7 @@ def load(slotname, gui):
 
     if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/qtile'):
         os.system('qtile cmd-obj -o cmd -f restart')
-        os.system(f'nitrogen --save {AppConfig["NitrogenStyle"]} {SlotsFolder}/"{slotname}"/Wallpaper.png &>/dev/null')
+        os.system(f'nitrogen --restore')
 
 
     if DE == 'xfce':
@@ -541,7 +562,7 @@ def Import(filepath, shop):
 
     #Importing themes and other stuff
     click.echo(click.style('\nImporting Slot', fg='green'))
-    os.system(f'cp -rf {Path(ImportSlotDir)}/slot/* {SlotsFolder}/ &> /dev/null')
+    os.system(f'cp -rf {Path(ImportSlotDir)}/slot/* {SlotsFolder} &> /dev/null')
 
     click.echo(click.style('Importing Themes', fg='green'))
     if not os.path.isdir(Path('~/.local/share/themes').expanduser()):

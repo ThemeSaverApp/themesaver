@@ -47,21 +47,23 @@ elif package_manager == 'apt' and installDependencies:
     os.system("sudo apt update && sudo apt -y install xdotool fonts-ubuntu imagemagick scrot python3-pyqt5 python3-pip gnome-shell-extensions gnome-tweaks")
 
 # Cloning Repo
-if not os.path.isdir(f"{os.environ['HOME']}/.themesaver/"):
+if not os.path.isdir(f"/opt/themesaver"):
     click.echo(click.style('\n=========[ Cloning Github Repo ]=========', fg='green'))
-    os.system("git clone https://github.com/techcoder20/themesaver ~/.themesaver")
+    os.system("sudo git clone https://github.com/techcoder20/themesaver /opt/themesaver")
+    os.system("sudo chmod -R 777 /opt/themesaver")
+    os.system("sudo chown -R $USER:$USER /opt/themesaver")
 
 if DE == 'xfce' and installDependencies:
     if package_manager == 'pacman':
         os.system('sudo pacman -S xfce4-panel-profiles --noconfirm --noprogressbar --needed')
     elif package_manager == 'apt':
-        os.system('sudo dpkg -i ~/.themesaver/xfce4-panel-profiles.deb && sudo apt -y install -f')
+        os.system('sudo dpkg -i /opt/themesaver/xfce4-panel-profiles.deb && sudo apt -y install -f')
 
 click.echo(click.style('\n=========[ Generating Required Files ]=========', fg='green'))
 # Creating Desktop Entry
 click.echo(click.style('Installing Icons', fg='blue'))
 os.system('mkdir ~/.local/share/icons')
-os.system('cp ~/.themesaver/GUI/Icons/OG/ThemeSaver.png ~/.local/share/icons')
+os.system('cp /opt/themesaver/GUI/Icons/OG/ThemeSaver.png ~/.local/share/icons')
 click.echo(click.style('Creating Desktop Entry', fg='blue'))
 os.system("mkdir ~/.local/share/applications")
 os.system('touch ~/.local/share/applications/ThemeSaver.desktop')
@@ -80,14 +82,14 @@ Categories=Utility;
 print()
 click.echo(click.style('Creating Default Configs', fg='blue'))
 os.system('mkdir ~/.config/ThemeSaver')
-os.system('cp ~/.themesaver/config.env ~/.config/ThemeSaver/')
+os.system('cp /opt/themesaver/config.env ~/.config/ThemeSaver/')
 
 click.echo(click.style('\n=========[ Installing Python Package ]=========', fg='green'))
 
 
 # Installing themesaver bin file
 click.echo(click.style('Installing package with pip', fg='blue'))
-os.system('cd ~/.themesaver && pip install --editable .')
+os.system('cd /opt/themesaver && pip install --editable .')
 
 noBin = False
 for path in os.environ['PATH'].split(':'):
