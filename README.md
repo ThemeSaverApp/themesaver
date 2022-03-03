@@ -98,7 +98,7 @@ python3 ~/ThemeSaver/install.py
 If you dont like themesaver for some reason you can uninstall by running this command in a terminal.
 
 ```
-python3 ~/.themesaver/uninstall.py
+python3 ~/ThemeSaver/uninstall.py
 ```
 
 </details>
