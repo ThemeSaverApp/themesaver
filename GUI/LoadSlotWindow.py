@@ -74,12 +74,15 @@ class LoadSlotWindow(QDialog):
         
         self.SlotNames = []
 
-        DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
+        if 'XDG_CURRENT_DESKTOP' in os.environ.keys():
+            DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
+            if len(DE.split(':')) != 1:
+                DE = DE.split(':')[1]
+        elif 'DESKTOP_SESSION' in os.environ.keys():
+            DE = os.environ['DESKTOP_SESSION'].lower().strip()
         WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
-        if len(DE.split(':')) != 1:
-            DE = DE.split(':')[1]
         if DE.strip() == '':
-            DE = WM
+            DE = WM  
 
 
         for slotname in os.listdir(f"{FolderPath}/Slots/"):

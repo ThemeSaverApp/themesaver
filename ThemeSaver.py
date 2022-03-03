@@ -17,9 +17,12 @@ RequiredKDELocal = convertArray('KDELocal')
 PlankProperties = convertArray('Plank')
 Configs = convertArray('Configs')
 
-DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
-if len(DE.split(':')) != 1:
-    DE = DE.split(':')[1]
+if 'XDG_CURRENT_DESKTOP' in os.environ.keys():
+    DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
+    if len(DE.split(':')) != 1:
+        DE = DE.split(':')[1]
+elif 'DESKTOP_SESSION' in os.environ.keys():
+    DE = os.environ['DESKTOP_SESSION'].lower().strip()
 WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
 if DE.strip() == '':
     DE = WM
@@ -152,6 +155,7 @@ def save(slotname):
 
     if WM == 'awesome':
         os.system(f'cp -rf ~/.config/awesome {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+        WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '') 
 
     if WM == 'qtile' or WM == 'lg3d':
         os.system(f'cp -rf ~/.config/qtile {SlotsFolder}/"{slotname}"/configs &>/dev/null')
@@ -251,6 +255,7 @@ def load(slotname, gui):
 
     if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/awesome'):
         os.system('echo "awesome.restart()" | awesome-client')
+        os.system(f'nitrogen --save {AppConfig["NitrogenStyle"]} {SlotsFolder}/"{slotname}"/Wallpaper.png &>/dev/null')
 
     if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/qtile'):
         os.system('qtile cmd-obj -o cmd -f restart')
