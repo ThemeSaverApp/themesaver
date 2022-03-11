@@ -5,7 +5,7 @@ CleanUpCommands = [
 'rm ~/.local/share/icons/ThemeSaver.png',
 'pip3 uninstall -y themesaver',
 'rm ~/.local/bin/themesaver',
- 'sudo rm -r ~/.themesaver',
+ 'sudo rm -r /opt/themesaver',
 ]
 
 for command in CleanUpCommands:
