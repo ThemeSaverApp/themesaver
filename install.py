@@ -31,7 +31,7 @@ WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
 if DE.strip() == '':
     DE = WM
 
-SupportedDE_WM = ['xfce', 'xfwm4', 'plasma', 'kde','kwin','qtile', 'lg3d', 'gnome', 'gnome shell', 'awesome']
+SupportedDE_WM = ['xfce', 'xfwm4', 'plasma', 'kde','kwin','qtile', 'lg3d', 'gnome', 'gnome shell', 'awesome', 'i3']
 
 if not DE in SupportedDE_WM or not WM in SupportedDE_WM:      
         click.echo(click.style(f'The Desktop Environment {DE} and Window Manager {WM} Is Not Supported', fg='red')) 

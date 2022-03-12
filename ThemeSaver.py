@@ -162,13 +162,7 @@ def save(slotname):
         else:
             WallpaperPath = os.popen(f"sed -n '/wallpaper=/p' /etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf").read().split('\n')[0].replace('wallpaper=', '')     
                     
-
-    if WM == 'awesome':
-        os.system(f'cp -rf ~/.config/awesome {SlotsFolder}/"{slotname}"/configs &>/dev/null')
-        WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().split('\n')[0].replace('file=', '') 
-
-    if WM == 'qtile' or WM == 'lg3d':
-        os.system(f'cp -rf ~/.config/qtile {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+    def nitrogenSave():
         os.system(f'cp -r ~/.config/nitrogen {SlotsFolder}/"{slotname}"/configs')
         WallpaperPath = os.popen(f"sed -n '/file/p' ~/.config/nitrogen/bg-saved.cfg").read().strip().split('\n')
 
@@ -179,6 +173,25 @@ def save(slotname):
             else:
                 os.system(f'cp \'{WallpaperPath[n].replace("file=", "").strip()}\' \'{AppConfig["FolderPath"]}/Slots/{slotname}/Wallpaper-Monitor{n+1}.png\'')
                 os.system(f'sed -i "s#{WallpaperPath[n].strip()}#file={AppConfig["FolderPath"]}/Slots/{slotname}/Wallpaper-Monitor{n}#g" /opt/themesaver/Slots/{slotname}/configs/nitrogen/bg-saved.cfg')
+
+
+    if WM == 'awesome':
+        os.system(f'cp -rf ~/.config/awesome {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+        nitrogenSave()
+
+    if WM == 'qtile' or WM == 'lg3d':
+        os.system(f'cp -rf ~/.config/qtile {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+        nitrogenSave()
+
+    if WM == 'i3':
+        os.system(f'cp -rf ~/.config/i3 {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+        nitrogenSave()        
+
+    if WM == 'xmonad':
+        os.system(f'cp -rf ~/.xmonad {SlotsFolder}/"{slotname}"/configs &>/dev/null')
+        nitrogenSave()
+
+        
 
     if DE == 'gnome' and WM == 'gnome shell':
         os.system(f'dconf dump / > {SlotsFolder}/"{slotname}"/{slotname}')
@@ -276,10 +289,14 @@ def load(slotname, gui):
 
     if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/awesome'):
         os.system('echo "awesome.restart()" | awesome-client')
-        os.system(f'nitrogen --save {AppConfig["NitrogenStyle"]} {SlotsFolder}/"{slotname}"/Wallpaper.png &>/dev/null')
+        os.system(f'nitrogen --restore')
 
     if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/qtile'):
         os.system('qtile cmd-obj -o cmd -f restart')
+        os.system(f'nitrogen --restore')
+
+    if os.path.isdir(f'{SlotsFolder}/{slotname}/configs/qtile'):
+        os.system('i3 reload')
         os.system(f'nitrogen --restore')
 
 

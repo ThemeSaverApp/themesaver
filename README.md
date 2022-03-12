@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="400" src="Screenshots/LogoAndText.png">  
+  <img src="Screenshots/LogoAndText.png">  
 </p>
 
 
@@ -23,6 +23,18 @@ Setting up a rice takes a lot of work. You need to install, copy the themes to t
 ## Installation
 
 If the app has intrigued you you can install it by running this command in a terminal to install themesaver.
+
+***Note:*** Only the following Desktop environments and Windows Managers are supported:
+- xfce
+- xfwm4
+- plasma
+- kde
+- kwin
+- qtile
+- gnome
+- gnome shell
+- awesome
+- i3
 
 ```
 wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.py | python3
