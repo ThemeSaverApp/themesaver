@@ -37,7 +37,7 @@ If the app has intrigued you you can install it by running this command in a ter
 - i3
 
 ```
-wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.py | python3
+pip3 install themesaver
 ```
 
 <details>
@@ -45,8 +45,9 @@ wget -qO- https://raw.githubusercontent.com/techcoder20/ThemeSaver/main/install.
 To manually install ThemeSaver:
  
 ```
-sudo git clone https://github.com/techcoer20/themesaver /opt/themesaver
-python3 /opt/themesaver/install.py
+git clone https://github.com/techcoer20/themesaver 
+cd themesaver
+pip3 install .
 ```
 </details>
 
@@ -55,7 +56,7 @@ python3 /opt/themesaver/install.py
 If you dont like themesaver for some reason you can uninstall by running this command in a terminal.
 
 ```
-python3 /opt/themesaver/uninstall.py
+pip3 uninstall themesaver
 ```
 
 </details>
