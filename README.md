@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Screenshots/LogoAndText.png">  
+  <img src="https://github.com/ThemeSaverApp/themesaver/blob/main/Screenshots/LogoAndText.png?raw=true">  
 </p>
 
 
@@ -16,7 +16,7 @@ In linux terms 'rice' is used to describe a person's unix desktop where someone 
 
 ## Why This Apps Exists ?
 
-Setting up a rice takes a lot of work. You need to install, copy the themes to their specific folders and if you find a rice you like it could be hard copying the file to the specific place if you're a noob in ricing. Wouldnt it be simple if you could just download one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles and setting up the rice. For more information take a look at the [wiki](https://github.com/techcoder20/themesaver/wiki)
+Setting up a rice takes a lot of work. You need to install, copy the themes to their specific folders and if you find a rice you like it could be hard copying the file to the specific place if you're a noob in ricing. Wouldnt it be simple if you could just download one file which you can install on your system with one click without wasting your time copy pasting the several dotfiles and setting up the rice.
 
 <hr>
 
@@ -59,6 +59,11 @@ python3 /opt/themesaver/uninstall.py
 ```
 
 </details>
+
+<hr>
+
+## Wiki
+For more information take a look at the [wiki](https://github.com/techcoder20/themesaver/wiki)
 
 <hr>
 

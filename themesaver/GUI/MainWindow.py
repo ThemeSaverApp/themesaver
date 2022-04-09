@@ -12,9 +12,8 @@ import tarfile
 from pathlib import Path
 import json
 
-
-AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/ThemeSaver/config.env")
-FolderPath = os.path.expanduser(AppConfig['FolderPath'])
+AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/themesaver/config.env")
+FolderPath = os.path.dirname(os.path.dirname(__file__))
 
 if not 'icon-pack' in AppConfig.keys():
     AppConfig["icon-pack"] = 'OG'
@@ -25,7 +24,9 @@ from SaveSlotWindow import SaveSlotWindow
 from LoadSlotWindow import LoadSlotWindow
 from ImportSlotWindow import ImportSlotWindow
 
+from themesaver.Misc.getInfo import getDE, getWM
 
+print(AppConfig)
 
 try:
 
@@ -109,18 +110,13 @@ class MainWin(QMainWindow):
 
         self.SlotNames = []
 
-        if 'XDG_CURRENT_DESKTOP' in os.environ.keys():
-            DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
-            if len(DE.split(':')) != 1:
-                DE = DE.split(':')[1]
-        elif 'DESKTOP_SESSION' in os.environ.keys():
-            DE = os.environ['DESKTOP_SESSION'].lower().strip()
-        WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
-        if DE.strip() == '':
-            DE = WM            
+        DE = getDE()
+        WM = getWM()
+        print(DE, WM)
 
-        for slotname in os.listdir(f"{FolderPath}/Slots/"):
-            jsonFile = json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))
+        for slotname in os.listdir(f"/opt/themesaver/Slots/"):
+            print(slotname)
+            jsonFile = json.load(open(f'/opt/themesaver/Slots/{slotname}/info.json'))
             if jsonFile['desktopEnvironment'] == DE and jsonFile['windowManager'] == WM:
                 self.SlotNames.append(slotname)
 
@@ -130,6 +126,8 @@ class MainWin(QMainWindow):
             NoSlots.setIcon(QMessageBox.Critical)
             run = NoSlots.exec_()
             return None
+
+        print(self.SlotNames)
 
         self.LoadSlotWin = LoadSlotWindow()
         self.LoadSlotWin.show()

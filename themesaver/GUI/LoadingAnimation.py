@@ -7,8 +7,8 @@ import sys
 import time
 from dotenv import load_dotenv, dotenv_values
 
-AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/ThemeSaver/config.env")
-FolderPath = os.path.expanduser(AppConfig['FolderPath'])
+AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/themesaver/config.env")
+FolderPath = os.path.dirname(os.path.dirname(__file__))
 
 
 class LoadingAnimation(QDialog):

@@ -4,10 +4,11 @@ from PyQt5.QtGui import QPixmap, QMovie
 from PyQt5.QtCore import QDir
 import os, sys, time, json
 from dotenv import load_dotenv, dotenv_values
+from themesaver.Misc.getInfo import getDE, getWM
 
      
-AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/ThemeSaver/config.env")
-FolderPath = os.path.expanduser(AppConfig['FolderPath'])
+AppConfig = dotenv_values(f"{os.environ['HOME']}/.config/themesaver/config.env")
+FolderPath = os.path.dirname(os.path.dirname(__file__))
 
 class LoadSlotWindow(QDialog):
     def __init__(self):
@@ -74,19 +75,12 @@ class LoadSlotWindow(QDialog):
         
         self.SlotNames = []
 
-        if 'XDG_CURRENT_DESKTOP' in os.environ.keys():
-            DE = os.environ['XDG_CURRENT_DESKTOP'].lower().strip()
-            if len(DE.split(':')) != 1:
-                DE = DE.split(':')[1]
-        elif 'DESKTOP_SESSION' in os.environ.keys():
-            DE = os.environ['DESKTOP_SESSION'].lower().strip()
-        WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
-        if DE.strip() == '':
-            DE = WM  
+        DE = getDE()
+        WM = getWM()
 
 
-        for slotname in os.listdir(f"{FolderPath}/Slots/"):
-            jsonFile = json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))
+        for slotname in os.listdir(f"/opt/themesaver/Slots/"):
+            jsonFile = json.load(open(f'/opt/themesaver/Slots/{slotname}/info.json'))
             if jsonFile['desktopEnvironment'] == DE and jsonFile['windowManager'] == WM:
                 self.SlotNames.append(slotname)
 
@@ -95,7 +89,7 @@ class LoadSlotWindow(QDialog):
         CurrentSlot = 0
 
         self.SlotName.setText(self.SlotNames[CurrentSlot])
-        self.Screenshot.setPixmap(QtGui.QPixmap(f"{FolderPath}/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
+        self.Screenshot.setPixmap(QtGui.QPixmap(f"/opt/themesaver/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
 
         
 
@@ -105,18 +99,18 @@ class LoadSlotWindow(QDialog):
             if not CurrentSlot + 1 == len(self.SlotNames):
                     CurrentSlot += 1
                     self.SlotName.setText(self.SlotNames[CurrentSlot])
-                    self.Screenshot.setPixmap(QtGui.QPixmap(f"{FolderPath}/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
+                    self.Screenshot.setPixmap(QtGui.QPixmap(f"/opt/themesaver/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
 
     def Back(self):
             global CurrentSlot
             if not CurrentSlot == 0:
                     CurrentSlot -= 1
                     self.SlotName.setText(self.SlotNames[CurrentSlot])
-                    self.Screenshot.setPixmap(QtGui.QPixmap(f"{FolderPath}/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
+                    self.Screenshot.setPixmap(QtGui.QPixmap(f"/opt/themesaver/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
 
     def Del(self):
             global CurrentSlot
-            os.system(f"rm -r {FolderPath}/Slots/'{self.SlotNames[CurrentSlot]}'")
+            os.system(f"rm -r /opt/themesaver/Slots/'{self.SlotNames[CurrentSlot]}'")
             FinishedDeleting = QMessageBox()
             FinishedDeleting.setText(f"Finished Deleting The ''{self.SlotNames[CurrentSlot]}'' Slot")
             run = FinishedDeleting.exec_()
@@ -124,10 +118,10 @@ class LoadSlotWindow(QDialog):
             # Staring from begginning after deleting 1 slot
             self.SlotNames = []
 
-            for slotname in os.listdir(f"{FolderPath}/Slots/"):
+            for slotname in os.listdir(f"/opt/themesaver/Slots/"):
                 DE = os.environ['DESKTOP_SESSION'].lower()
                 WM = os.popen("wmctrl -m").read().split('\n')[0].replace('Name: ', '').lower()
-                jsonFile = json.load(open(f'{FolderPath}/Slots/{slotname}/info.json'))
+                jsonFile = json.load(open(f'/opt/themesaver/Slots/{slotname}/info.json'))
                 if jsonFile['desktopEnvironment'] == DE and jsonFile['windowManager'] == WM:
                     self.SlotNames.append(slotname)
 
@@ -144,11 +138,11 @@ class LoadSlotWindow(QDialog):
                     
             CurrentSlot = 0
             self.SlotName.setText(self.SlotNames[CurrentSlot])
-            self.Screenshot.setPixmap(QtGui.QPixmap(f"{FolderPath}/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
+            self.Screenshot.setPixmap(QtGui.QPixmap(f"/opt/themesaver/Slots/{self.SlotNames[CurrentSlot]}/Screenshot.png"))
 
     def Load(self):
             global CurrentSlot
-            os.system(f"python3 {FolderPath}/ThemeSaver.py load '{self.SlotNames[CurrentSlot]}'")
+            os.system(f"themesaver load '{self.SlotNames[CurrentSlot]}'")
             FinishedLoading = QMessageBox()
             FinishedLoading.setText(f"Finished Loading The '{self.SlotNames[CurrentSlot]}' Slot")
             run = FinishedLoading.exec_()
